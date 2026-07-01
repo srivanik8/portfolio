@@ -1,22 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #1c1f1d;
-  --color-paper: #faf9f6;
-  --color-signal: #1f9d57;
-  --color-amber: #b3791f;
-  --color-hairline: #ddd9d0;
-  --color-ink-soft: #f1efe9;
-  --color-paper-dim: #5d5b55;
+  --color-ink: #edeae2;
+  --color-paper: #0f1210;
+  --color-signal: #4ade80;
+  --color-amber: #f59e0b;
+  --color-hairline: #2a2f2c;
+  --color-ink-soft: #161a17;
+  --color-paper-dim: #8a8880;
 
   --font-display: "Fraunces", serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --font-body: "Inter", system-ui, sans-serif;
 }
 
+/* Default to dark so there's zero flash before React mounts */
 body {
-  background: var(--color-paper);
-  color: var(--color-ink);
+  background: #0f1210;
+  color: #edeae2;
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }

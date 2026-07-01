@@ -12,27 +12,22 @@ import {
 
 // ── Coding animation ──────────────────────────────────────────────────────────
 const CODE_LINES = [
-  "class Engineer:",
-  '    role = "Data Engineer"',
-  '    based_in = "Dublin, IE"',
+  "def diagnose(report: str) -> dict:",
+  "    # parse unstructured EMR with gemini",
+  "    doc = gemini.extract(report)",
   "",
-  "    stack = [",
-  '        "PyTorch", "Gemini API",',
-  '        "LangChain", "RAG"',
-  "    ]",
+  "    symptoms = doc['symptoms']",
+  "    clf_input = vectorise(symptoms)",
+  "    prediction = model.predict(clf_input)",
   "",
-  "    shipped = 2          # prototype → production",
-  "    published = True     # RL + NLP research",
-  "    hackathons_won = 7   ",
-  "    open_to_work = True",
+  "    return {",
+  '        "condition": prediction,',
+  '        "confidence": model.score,',
+  '        "source": "RAG + sklearn"',
+  "    }",
   "",
-  "    def currently_building(self):",
-  '        return "GenAI pipelines"',
-  "",
-  "srivani = Data_Engineer()",
+  "# deployed · 87% accuracy",
 ];
-
-
 
 function CodePanel() {
   const [visibleLines, setVisibleLines] = useState(0);
@@ -56,40 +51,60 @@ function CodePanel() {
     };
   }, []);
 
-  const getColor = (line: string) => {
-    if (line.startsWith("#")) return "text-paper-dim/50 italic";
+  // Use inline style colors keyed to dark/light so there's zero flash on first render.
+  // Tailwind class-based colors can flash briefly before CSS vars resolve.
+  const getStyle = (line: string): React.CSSProperties => {
+    if (line.startsWith("#"))
+      return { color: "var(--color-paper-dim)", opacity: 0.55, fontStyle: "italic" };
     if (
+      line.includes("def ") ||
+      line.includes("class ") ||
       line.includes("for ") ||
       line.includes("if ") ||
-      line.includes("def ") ||
-      line.includes("class ")
+      line.includes("return")
     )
-      return "text-amber";
+      return { color: "var(--color-amber)" };
     if (line.includes("import") || line.includes("from"))
-      return "text-signal";
+      return { color: "var(--color-signal)" };
+    if (line.includes('"') || line.includes("'"))
+      return { color: "#6db88a" }; // muted green for strings, works in both modes
     if (line.startsWith("    ") && line.includes("="))
-      return "text-ink";
-    if (line.includes("print(") || line.includes(".save("))
-      return "text-signal/80";
-    if (line.trim() === "") return "";
-    return "text-paper-dim";
+      return { color: "var(--color-ink)" };
+    if (line.trim() === "") return {};
+    return { color: "var(--color-paper-dim)" };
   };
 
   return (
     <div className="hidden lg:flex absolute right-0 top-0 h-full w-[360px] items-center">
-      <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-paper to-transparent z-10 pointer-events-none" />
-      <div className="w-full rounded-xl border border-hairline bg-[#f7f5f0] p-5 font-mono text-[11px] leading-[1.7] shadow-sm">
-        <div className="flex items-center gap-1.5 mb-3 pb-2 border-b border-hairline">
+      {/* fade edge so panel blends into page background */}
+      <div
+        className="absolute inset-y-0 left-0 w-16 z-10 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to right, var(--color-paper), transparent)",
+        }}
+      />
+      <div
+        className="w-full rounded-xl border border-hairline p-5 font-mono text-[11px] leading-[1.7] shadow-sm"
+        style={{ backgroundColor: "var(--color-ink-soft)" }}
+      >
+        {/* traffic lights */}
+        <div
+          className="flex items-center gap-1.5 mb-3 pb-2 border-b border-hairline"
+        >
           <span className="h-2 w-2 rounded-full bg-red-300" />
           <span className="h-2 w-2 rounded-full bg-yellow-300" />
           <span className="h-2 w-2 rounded-full bg-green-300" />
-          <span className="ml-2 text-paper-dim/40 text-[10px] tracking-wide">
-            srivani.py
+          <span
+            className="ml-2 text-[10px] tracking-wide"
+            style={{ color: "var(--color-paper-dim)", opacity: 0.5 }}
+          >
+            diagnose.py
           </span>
         </div>
         <div className="overflow-hidden">
           {CODE_LINES.slice(0, visibleLines).map((line, i) => (
-            <div key={i} className={`whitespace-pre ${getColor(line)}`}>
+            <div key={i} className="whitespace-pre" style={getStyle(line)}>
               {line === "" ? "\u00A0" : line}
             </div>
           ))}
@@ -106,6 +121,10 @@ function CodePanel() {
   );
 }
 
+// ── Dark mode context ─────────────────────────────────────────────────────────
+import { createContext } from "react";
+const DarkCtx = createContext(false);
+
 // ── Nav ───────────────────────────────────────────────────────────────────────
 const NAV = [
   { href: "#about", label: "about" },
@@ -115,7 +134,7 @@ const NAV = [
   { href: "#contact", label: "contact" },
 ];
 
-function Nav() {
+function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
   return (
     <header className="sticky top-0 z-50 border-b border-hairline bg-paper/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
@@ -133,12 +152,40 @@ function Nav() {
             </a>
           ))}
         </nav>
-        <a
-          href={`mailto:${profile.email}`}
-          className="font-mono text-xs uppercase tracking-[0.18em] text-signal underline-offset-4 hover:underline sm:hidden"
-        >
-          contact
-        </a>
+        <div className="flex items-center gap-3">
+          {/* dark/light toggle */}
+          <button
+            onClick={toggle}
+            aria-label="Toggle dark mode"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-hairline text-paper-dim hover:border-signal hover:text-signal transition-colors"
+          >
+            {dark ? (
+              /* sun icon */
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            ) : (
+              /* moon icon */
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            )}
+          </button>
+          <a
+            href={`mailto:${profile.email}`}
+            className="font-mono text-xs uppercase tracking-[0.18em] text-signal underline-offset-4 hover:underline sm:hidden"
+          >
+            contact
+          </a>
+        </div>
       </div>
     </header>
   );
@@ -346,21 +393,17 @@ function Stack() {
     <section id="stack" className="mx-auto max-w-5xl px-6 py-24">
       <SectionLabel index="03" label="// stack" />
 
-      {/* Category cards — 2 col on sm, 3 col on lg */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {Object.entries(skills).map(([category, items]) => (
           <div
             key={category}
-            className="rounded-xl border border-hairline bg-ink-soft overflow-hidden"
+            className="rounded-xl border border-hairline bg-ink-soft p-5 flex flex-col gap-3"
           >
-            {/* category header strip */}
-            <div className="border-b border-hairline px-4 py-2.5">
-              <span className="font-mono text-xs uppercase tracking-[0.18em] text-amber">
-                {category}
-              </span>
-            </div>
-            {/* tags */}
-            <div className="flex flex-wrap gap-2 p-4">
+            {/* category as small signal badge, no divider */}
+            <span className="self-start rounded-full bg-signal/10 px-2.5 py-0.5 font-mono text-[10px] text-signal tracking-wide">
+              {category}
+            </span>
+            <div className="flex flex-wrap gap-2">
               {items.map((item) => (
                 <span
                   key={item}
@@ -473,16 +516,45 @@ function Footer() {
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [dark, setDark] = useState(true);
+
+  const darkVars = {
+    backgroundColor: "#0f1210",
+    "--color-ink": "#edeae2",
+    "--color-paper": "#0f1210",
+    "--color-paper-dim": "#8a8880",
+    "--color-hairline": "#2a2f2c",
+    "--color-ink-soft": "#161a17",
+    "--color-signal": "#4ade80",
+    "--color-amber": "#f59e0b",
+  } as React.CSSProperties;
+
+  const lightVars = {
+    backgroundColor: "#faf9f6",
+    "--color-ink": "#1c1f1d",
+    "--color-paper": "#faf9f6",
+    "--color-paper-dim": "#5d5b55",
+    "--color-hairline": "#ddd9d0",
+    "--color-ink-soft": "#f1efe9",
+    "--color-signal": "#1f9d57",
+    "--color-amber": "#b3791f",
+  } as React.CSSProperties;
+
   return (
-    <div className="min-h-screen bg-paper text-ink">
-      <Nav />
-      <Hero />
-      <About />
-      <Work />
-      <Projects />
-      <Stack />
-      <Contact />
-      <Footer />
-    </div>
+    <DarkCtx.Provider value={dark}>
+      <div
+        className="min-h-screen text-ink"
+        style={dark ? darkVars : lightVars}
+      >
+        <Nav dark={dark} toggle={() => setDark((d) => !d)} />
+        <Hero />
+        <About />
+        <Work />
+        <Projects />
+        <Stack />
+        <Contact />
+        <Footer />
+      </div>
+    </DarkCtx.Provider>
   );
 }
