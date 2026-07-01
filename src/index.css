@@ -1,49 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #0b0f0e;
-  --color-paper: #edeae2;
-  --color-signal: #7fe5a8;
-  --color-amber: #d9a85c;
-  --color-hairline: #3a4540;
-  --color-ink-soft: #111614;
-  --color-paper-dim: #a8a59c;
+  --color-ink: #1c1f1d;
+  --color-paper: #faf9f6;
+  --color-signal: #1f9d57;
+  --color-amber: #b3791f;
+  --color-hairline: #ddd9d0;
+  --color-ink-soft: #f1efe9;
+  --color-paper-dim: #5d5b55;
 
   --font-display: "Fraunces", serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --font-body: "Inter", system-ui, sans-serif;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
-  background: var(--color-ink);
-  color: var(--color-paper);
+  background: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
   background: var(--color-signal);
-  color: var(--color-ink);
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-hairline) transparent;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
+  color: var(--color-paper);
 }
 
 :focus-visible {

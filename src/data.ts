@@ -2,14 +2,15 @@ export const profile = {
   name: "Srivani Konda",
   role: "AI / ML Engineer",
   tagline:
-    "I build systems that learn from noisy data — trading agents, diagnostic pipelines, and the GenAI plumbing that connects them.",
+    "I build systems that learn from noisy data — trading agents, diagnostic pipelines, and the GenAI plumbing in between.",
   location: "Dublin, Ireland",
+  availability: "Open to work · Dublin · Cork · Remote",
   email: "imkondasrivani@gmail.com",
   phone: "+353 83 391 1890",
   linkedin: "https://linkedin.com/in/srivani-konda",
   github: "https://github.com/srivanik8",
   summary:
-    "Computer Science graduate (AI & ML specialisation) and current MSc Data and Computational Science student at UCD. I take AI projects from prototype to production — a published reinforcement-learning trading system, a deployed Gemini-powered diagnostic platform, and a multimodal learning app built solo end to end.",
+    "I'm Srivani — a CS grad specialising in AI & ML, currently doing my MSc at UCD. I got into machine learning because I liked the idea of writing code that figures things out on its own, and that's still what drives most of what I build. Over the past couple of years I've shipped a reinforcement learning trading system that got published, built a Gemini-powered diagnostic tool that's live on Streamlit, and put together a multimodal learning app from scratch. I'm most at home at the intersection of research and deployment — reading papers on a Monday, pushing something to production by Friday.",
 };
 
 export const education = [
@@ -65,31 +66,54 @@ export const experience = [
 
 export const projects = [
   {
-    name: "Algorithmic Trading using Reinforcement Learning",
-    tag: "Published Research",
+    name: "Algorithmic Trading using RL",
     stack: ["PyTorch", "Gymnasium", "Transformers", "NLTK", "Pandas"],
     description:
-      "Trained PPO, DQN and A2C agents to trade under simulated market conditions, reaching 92% strategy accuracy. Layered in a sentiment pipeline — Hugging Face Transformers and NLTK reading financial news to feed signal into the agents' decisions. Evaluated with formal risk metrics and strategy comparisons; findings published in a peer-reviewed journal.",
-    metric: "92% strategy accuracy",
-    link: null,
+      "Trained PPO, DQN and A2C agents to trade under simulated market conditions, reaching 92% strategy accuracy. Built a sentiment pipeline on top — Transformers and NLTK reading financial news to feed signal into the agents' decisions. Published in a peer-reviewed journal.",
+    link: {
+      label: "Read the paper",
+      url: "https://ijsrem.com/download/algorithmic-trading-using-machine-learning",
+    },
   },
   {
     name: "EMR Analysis & Disease Prediction",
-    tag: "Live Demo",
     stack: ["Python", "Streamlit", "Gemini API", "Scikit-learn"],
     description:
-      "An end-to-end diagnostic system pairing Scikit-learn on structured symptom data with Gemini reading unstructured EMRs and lab reports — RAG-style reasoning that maps free-text medical documents onto structured outputs. Deployed live on Streamlit, 87% classification accuracy.",
-    metric: "87% classification accuracy",
-    link: null,
+      "End-to-end diagnostic system: Scikit-learn on structured symptom data, Gemini reading unstructured EMRs and lab reports. RAG-style reasoning that maps free-text medical documents to structured outputs. 87% classification accuracy, deployed live.",
+    link: {
+      label: "View on GitHub",
+      url: "https://github.com/srivanik8/disease_prediction",
+    },
   },
   {
-    name: "FunLearn — Adaptive Learning Platform",
-    tag: "Live Demo · Solo Build",
+    name: "FunLearn",
     stack: ["Gemini", "React.js", "Whisper", "Vercel"],
     description:
-      "Gemini generates adaptive quizzes from source material; Whisper TTS turns the same content into on-demand podcasts. Built and shipped solo, concept through deployment, across a multimodal generative pipeline.",
-    metric: "Solo, concept → deploy",
-    link: null,
+      "Gemini generates adaptive quizzes from source material; Whisper TTS converts the same content into on-demand podcasts. Built and shipped solo, concept through deployment.",
+    link: {
+      label: "Live demo",
+      url: "https://fun-learn-nine.vercel.app",
+    },
+  },
+  {
+    name: "QuickQuery",
+    stack: ["MERN", "LangChain.js", "Gemini", "MongoDB"],
+    description:
+      "MongoDB query assistant that converts plain English into correct queries in Python or JavaScript. LangChain.js orchestrates Gemini under the hood. Includes QuickSnippet — a saved-query library for revisiting generated queries.",
+    link: {
+      label: "View on GitHub",
+      url: "https://github.com/srivanik8/QuickQuery",
+    },
+  },
+  {
+    name: "Vishayamitra",
+    stack: ["Python", "Streamlit", "PandasAI"],
+    description:
+      "Conversational data assistant built as a team — Streamlit front end, PandasAI-driven natural language querying over tabular data. Contributed to the data-querying and bot logic.",
+    link: {
+      label: "View on GitHub",
+      url: "https://github.com/srivanik8/vishayamitra",
+    },
   },
 ];
 
