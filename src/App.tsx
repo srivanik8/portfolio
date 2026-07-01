@@ -12,21 +12,24 @@ import {
 
 // ── Coding animation ──────────────────────────────────────────────────────────
 const CODE_LINES = [
-  "def diagnose(report: str) -> dict:",
-  "    # parse unstructured EMR with gemini",
-  "    doc = gemini.extract(report)",
+  "class Engineer:",
+  '    role = "Data Engineer"',
+  '    based_in = "Dublin, IE"',
   "",
-  "    symptoms = doc['symptoms']",
-  "    clf_input = vectorise(symptoms)",
-  "    prediction = model.predict(clf_input)",
+  "    stack = [",
+  '        "PyTorch", "Gemini API",',
+  '        "LangChain", "RAG"',
+  "    ]",
   "",
-  "    return {",
-  '        "condition": prediction,',
-  '        "confidence": model.score,',
-  '        "source": "RAG + sklearn"',
-  "    }",
+  "    shipped = 2          # prototype → production",
+  "    published = True     # RL + NLP research",
+  "    hackathons_won = 7   ",
+  "    open_to_work = True",
   "",
-  "# deployed · 87% accuracy",
+  "    def currently_building(self):",
+  '        return "GenAI pipelines"',
+  "",
+  "srivani = Data_Engineer()",
 ];
 
 function CodePanel() {
@@ -99,7 +102,7 @@ function CodePanel() {
             className="ml-2 text-[10px] tracking-wide"
             style={{ color: "var(--color-paper-dim)", opacity: 0.5 }}
           >
-            diagnose.py
+            srivani.py
           </span>
         </div>
         <div className="overflow-hidden">
