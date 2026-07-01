@@ -12,36 +12,27 @@ import {
 
 // ── Coding animation ──────────────────────────────────────────────────────────
 const CODE_LINES = [
-  "# training a trading agent with sentiment signals",
+  "class Engineer:",
+  '    role = "Data Engineer"',
+  '    based_in = "Dublin, IE"',
   "",
-  "env = TradingEnv(ticker='AAPL', window=30)",
-  "agent = PPOAgent(state_dim=env.obs_space)",
+  "    stack = [",
+  '        "PyTorch", "Gemini API",',
+  '        "LangChain", "RAG"',
+  "    ]",
   "",
-  "for episode in range(500):",
-  "    obs = env.reset()",
-  "    news = fetch_market_news(date=env.date)",
+  "    shipped = 2          # prototype → production",
+  "    published = True     # RL + NLP research",
+  "    hackathons_won = 7   ",
+  "    open_to_work = True",
   "",
-  "    # run sentiment through finbert",
-  "    sentiment = classifier(news)[0]",
-  "    signal = 1 if sentiment['label']",
-  "             == 'positive' else -1",
+  "    def currently_building(self):",
+  '        return "GenAI pipelines"',
   "",
-  "    obs = torch.cat([obs,",
-  "        torch.tensor([signal])], dim=-1)",
-  "",
-  "    action, log_prob = agent.act(obs)",
-  "    next_obs, reward, done = env.step(action)",
-  "    agent.remember(obs, action,",
-  "                   reward, log_prob)",
-  "",
-  "    if done:",
-  "        loss = agent.update()",
-  "        print(f'ep {episode} | reward:",
-  "              {reward:.2f} | loss: {loss:.4f}')",
-  "",
-  "# 92% strategy accuracy across 1000 simulations",
-  "agent.save('ppo_trading_final.pt')",
+  "srivani = Data_Engineer()",
 ];
+
+
 
 function CodePanel() {
   const [visibleLines, setVisibleLines] = useState(0);
@@ -93,7 +84,7 @@ function CodePanel() {
           <span className="h-2 w-2 rounded-full bg-yellow-300" />
           <span className="h-2 w-2 rounded-full bg-green-300" />
           <span className="ml-2 text-paper-dim/40 text-[10px] tracking-wide">
-            ppo_trading.py
+            srivani.py
           </span>
         </div>
         <div className="overflow-hidden">
@@ -192,12 +183,6 @@ function Hero() {
             Let's collaborate
           </a>
         </div>
-      </div>
-
-      {/* scroll hint */}
-      <div className="absolute bottom-8 left-6 flex items-center gap-2 font-mono text-xs text-paper-dim/40">
-        <span>scroll</span>
-        <span className="h-px w-8 bg-hairline" />
       </div>
     </section>
   );
@@ -361,18 +346,25 @@ function Stack() {
     <section id="stack" className="mx-auto max-w-5xl px-6 py-24">
       <SectionLabel index="03" label="// stack" />
 
-      {/* Skills as a tag cloud grouped by category */}
-      <div className="space-y-8">
+      {/* Category cards — 2 col on sm, 3 col on lg */}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {Object.entries(skills).map(([category, items]) => (
-          <div key={category} className="flex flex-wrap items-baseline gap-3">
-            <span className="w-36 flex-shrink-0 font-mono text-xs uppercase tracking-[0.15em] text-amber">
-              {category}
-            </span>
-            <div className="flex flex-wrap gap-2">
+          <div
+            key={category}
+            className="rounded-xl border border-hairline bg-ink-soft overflow-hidden"
+          >
+            {/* category header strip */}
+            <div className="border-b border-hairline px-4 py-2.5">
+              <span className="font-mono text-xs uppercase tracking-[0.18em] text-amber">
+                {category}
+              </span>
+            </div>
+            {/* tags */}
+            <div className="flex flex-wrap gap-2 p-4">
               {items.map((item) => (
                 <span
                   key={item}
-                  className="rounded-full border border-hairline bg-ink-soft px-3 py-1 font-mono text-xs text-paper-dim hover:border-signal hover:text-signal transition-colors cursor-default"
+                  className="rounded border border-hairline bg-paper px-2.5 py-1 font-mono text-xs text-paper-dim"
                 >
                   {item}
                 </span>
@@ -383,7 +375,7 @@ function Stack() {
       </div>
 
       {/* Hackathons + Certifications side by side */}
-      <div className="mt-16 grid gap-10 border-t border-hairline pt-12 sm:grid-cols-2">
+      <div className="mt-12 grid gap-10 border-t border-hairline pt-12 sm:grid-cols-2">
         <div>
           <p className="mb-5 font-mono text-xs uppercase tracking-[0.18em] text-amber">
             Hackathons
