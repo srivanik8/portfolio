@@ -1,33 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #edeae2;
-  --color-paper: #0f1210;
-  --color-signal: #4ade80;
-  --color-amber: #f59e0b;
-  --color-hairline: #2a2f2c;
-  --color-ink-soft: #161a17;
-  --color-paper-dim: #8a8880;
+  --color-ink: #211c16;
+  --color-paper: #fbf9f5;
+  --color-card: #ece4d5;
+  --color-accent: #b1502e;
+  --color-hairline: #e4ddd0;
+  --color-paper-dim: #6b6459;
 
   --font-display: "Fraunces", serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --font-body: "Inter", system-ui, sans-serif;
 }
 
-/* Default to dark so there's zero flash before React mounts */
+/* Default to light so there's zero flash before React mounts */
 body {
-  background: #0f1210;
-  color: #edeae2;
+  background: #fbf9f5;
+  color: #211c16;
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--color-signal);
+  background: var(--color-accent);
   color: var(--color-paper);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-signal);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }

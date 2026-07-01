@@ -1,563 +1,453 @@
-import { useState, useEffect, useRef } from "react";
-import SectionLabel from "./components/SectionLabel";
-import {
-  profile,
-  education,
-  experience,
-  projects,
-  skills,
-  accomplishments,
-  certifications,
-} from "./data";
+import { useState } from "react";
 
-// ── Coding animation ──────────────────────────────────────────────────────────
-const CODE_LINES = [
-  "class Engineer:",
-  '    role = "Data Engineer"',
-  '    based_in = "Dublin, IE"',
-  "",
-  "    stack = [",
-  '        "PyTorch", "Gemini API",',
-  '        "LangChain", "RAG"',
-  "    ]",
-  "",
-  "    shipped = 2          # prototype → production",
-  "    published = True     # RL + NLP research",
-  "    hackathons_won = 7   ",
-  "    open_to_work = True",
-  "",
-  "    def currently_building(self):",
-  '        return "GenAI pipelines"',
-  "",
-  "srivani = Data_Engineer()",
+// ── Types ──────────────────────────────────────────────────────────────────────
+type Page = "home" | "projects" | "skills" | "about";
+type Theme = "light" | "dark";
+
+// ── Theme tokens ───────────────────────────────────────────────────────────────
+const themes = {
+  light: {
+    "--bg": "#f0ece0",
+    "--surface": "#ece7db",
+    "--surface-strong": "#e6e0d2",
+    "--fg": "#1a232c",
+    "--ink": "#0f1820",
+    "--muted": "#5a6472",
+    "--accent": "#9b4a3c",
+    "--accent-soft": "rgba(155,74,60,0.10)",
+    "--border": "rgba(15,24,32,0.16)",
+    "--border-soft": "rgba(15,24,32,0.09)",
+  },
+  dark: {
+    "--bg": "#0f1419",
+    "--surface": "#161c23",
+    "--surface-strong": "#1c232c",
+    "--fg": "#c5c5c5",
+    "--ink": "#e2ddd3",
+    "--muted": "#9a948b",
+    "--accent": "#d19478",
+    "--accent-soft": "rgba(209,148,120,0.12)",
+    "--border": "rgba(212,207,197,0.16)",
+    "--border-soft": "rgba(212,207,197,0.09)",
+  },
+} as const;
+
+// ── Data ───────────────────────────────────────────────────────────────────────
+const projects = [
+  {
+    name: "Algorithmic Trading using RL",
+    stack: ["PyTorch", "Gymnasium", "Transformers", "NLTK", "Pandas"],
+    short: "PPO, DQN & A2C agents trading under simulated markets at 92% strategy accuracy — with a sentiment pipeline feeding the signal. Peer-reviewed.",
+    description: "Trained PPO, DQN and A2C agents to trade under simulated market conditions, reaching 92% strategy accuracy. Built a sentiment pipeline on top — Transformers and NLTK reading financial news to feed signal into the agents' decisions. Published in a peer-reviewed journal.",
+    linkLabel: "Read the paper",
+    url: "https://ijsrem.com/download/algorithmic-trading-using-machine-learning",
+  },
+  {
+    name: "EMR Analysis & Disease Prediction",
+    stack: ["Python", "Streamlit", "Gemini API", "Scikit-learn"],
+    short: "A diagnostic system pairing Scikit-learn on structured symptoms with Gemini reading unstructured EMRs. 87% accuracy, deployed live.",
+    description: "End-to-end diagnostic system: Scikit-learn on structured symptom data, Gemini reading unstructured EMRs and lab reports. RAG-style reasoning that maps free-text medical documents to structured outputs. 87% classification accuracy, deployed live.",
+    linkLabel: "View on GitHub",
+    url: "https://github.com/srivanik8/disease_prediction",
+  },
+  {
+    name: "FunLearn",
+    stack: ["Gemini", "React.js", "Whisper", "Vercel"],
+    short: "Gemini generates adaptive quizzes; Whisper TTS turns the same material into on-demand podcasts. Built and shipped solo.",
+    description: "Gemini generates adaptive quizzes from source material; Whisper TTS converts the same content into on-demand podcasts. Built and shipped solo, concept through deployment.",
+    linkLabel: "Live demo",
+    url: "https://fun-learn-nine.vercel.app",
+  },
+  {
+    name: "QuickQuery",
+    stack: ["MERN", "LangChain.js", "Gemini", "MongoDB"],
+    short: "Plain English into correct MongoDB queries in Python or JS, orchestrated by LangChain.js — plus a saved-query library.",
+    description: "MongoDB query assistant that converts plain English into correct queries in Python or JavaScript. LangChain.js orchestrates Gemini under the hood. Includes QuickSnippet — a saved-query library for revisiting generated queries.",
+    linkLabel: "View on GitHub",
+    url: "https://github.com/srivanik8/QuickQuery",
+  },
+  {
+    name: "Vishayamitra",
+    stack: ["Python", "Streamlit", "PandasAI"],
+    short: "A conversational data assistant — Streamlit front end, PandasAI natural-language querying over tabular data. Built as a team.",
+    description: "Conversational data assistant built as a team — Streamlit front end, PandasAI-driven natural language querying over tabular data. Contributed to the data-querying and bot logic.",
+    linkLabel: "View on GitHub",
+    url: "https://github.com/srivanik8/vishayamitra",
+  },
 ];
 
-function CodePanel() {
-  const [visibleLines, setVisibleLines] = useState(0);
-  const [cursor, setCursor] = useState(true);
-  const lineInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+const skills = [
+  { label: "ML / AI", items: ["Python", "PyTorch", "TensorFlow", "Keras", "Scikit-learn", "RL (PPO, DQN, A2C)", "Gymnasium"] },
+  { label: "LLMs & GenAI", items: ["Gemini API", "Claude API", "GPT", "Prompt Engineering", "RAG Pipeline Design", "LangChain"] },
+  { label: "NLP", items: ["Hugging Face (BERT, RoBERTa)", "NLTK", "Sentiment Analysis", "Document Classification"] },
+  { label: "Data", items: ["Pandas", "NumPy", "SQL", "MongoDB", "DuckDB", "EDA"] },
+  { label: "Deployment", items: ["Streamlit", "FastAPI", "Docker", "Git", "Vercel", "Azure"] },
+  { label: "Visualisation", items: ["Matplotlib", "Seaborn", "Plotly", "Tableau", "Power BI"] },
+  { label: "Other", items: ["React.js", "JavaScript", "OpenCV", "C / C++"] },
+];
 
-  useEffect(() => {
-    lineInterval.current = setInterval(() => {
-      setVisibleLines((v) => {
-        if (v >= CODE_LINES.length) {
-          clearInterval(lineInterval.current!);
-          return v;
-        }
-        return v + 1;
-      });
-    }, 90);
-    const cursorInterval = setInterval(() => setCursor((c) => !c), 500);
-    return () => {
-      clearInterval(lineInterval.current!);
-      clearInterval(cursorInterval);
-    };
-  }, []);
+const experience = [
+  {
+    role: "Python Developer Intern — AI & Data",
+    orgLine: "Intel Unnati · Remote",
+    period: "Mar 2024 — Jul 2024",
+    points: [
+      "Analysed structured datasets with Python, Pandas and SQL to extract actionable insight for data-driven decisions.",
+      "Built and evaluated end-to-end ML pipelines for classification tasks — feature engineering and model selection across structured data.",
+      "Shipped interactive Streamlit dashboards so stakeholders could explore data and monitor metrics in real time.",
+      "Produced visualisations in Matplotlib, Seaborn and Plotly to communicate model performance to non-technical audiences.",
+    ],
+  },
+  {
+    role: "Freelance AI-Assisted Web Developer",
+    orgLine: "Enshire Ltd · India",
+    period: "Dec 2024 — Mar 2025",
+    points: [
+      "Delivered end-to-end responsive web applications, translating business requirements into working software through iterative feedback loops.",
+      "Improved UX through data-driven iteration, contributing to a 30% increase in customer satisfaction scores.",
+    ],
+  },
+  {
+    role: "Front End Developer Intern",
+    orgLine: "Notify Ltd · Remote",
+    period: "Oct 2023 — Dec 2023",
+    points: ["Built 15+ dynamic UI components in React.js, increasing platform responsiveness by 80% across the production system."],
+  },
+];
 
-  // Use inline style colors keyed to dark/light so there's zero flash on first render.
-  // Tailwind class-based colors can flash briefly before CSS vars resolve.
-  const getStyle = (line: string): React.CSSProperties => {
-    if (line.startsWith("#"))
-      return { color: "var(--color-paper-dim)", opacity: 0.55, fontStyle: "italic" };
-    if (
-      line.includes("def ") ||
-      line.includes("class ") ||
-      line.includes("for ") ||
-      line.includes("if ") ||
-      line.includes("return")
-    )
-      return { color: "var(--color-amber)" };
-    if (line.includes("import") || line.includes("from"))
-      return { color: "var(--color-signal)" };
-    if (line.includes('"') || line.includes("'"))
-      return { color: "#6db88a" }; // muted green for strings, works in both modes
-    if (line.startsWith("    ") && line.includes("="))
-      return { color: "var(--color-ink)" };
-    if (line.trim() === "") return {};
-    return { color: "var(--color-paper-dim)" };
-  };
+const education = [
+  { school: "University College Dublin", location: "Dublin, Ireland", degree: "MSc in Data and Computational Science", detail: "Grade: 2:1", period: "2025 — Present" },
+  { school: "Sreenidhi Institute of Science and Technology", location: "Hyderabad, India", degree: "B.E. Computer Science (AI & ML)", detail: "GPA: 8.9 / 10", period: "2021 — 2025" },
+];
 
+const awards = [
+  { title: "NodeBrew 2024 Hackathon", detail: "1st Place Overall + Best Accessibility & Inclusivity Award" },
+  { title: "MLH TechTogether 2023", detail: "3rd Place Overall + Best Sustainability Hack" },
+  { title: "MLH Waffle Hacks 2023", detail: "Best Use of MongoDB Atlas" },
+];
+
+const certs = [
+  "Data Scientist Professional — DataCamp",
+  "Intro to ML, Data Visualisation, Pandas, Data Cleaning — Kaggle",
+  "Responsive Web Design — freeCodeCamp",
+];
+
+const socials = [
+  { label: "GitHub", url: "https://github.com/srivanik8" },
+  { label: "LinkedIn", url: "https://linkedin.com/in/srivani-konda" },
+  { label: "Email", url: "mailto:imkondasrivani@gmail.com" },
+];
+
+// ── ProjectCard ────────────────────────────────────────────────────────────────
+function ProjectCard({ p, full = false }: { p: typeof projects[0]; full?: boolean }) {
+  const [hovered, setHovered] = useState(false);
   return (
-    <div className="hidden lg:flex absolute right-0 top-0 h-full w-[360px] items-center">
-      {/* fade edge so panel blends into page background */}
-      <div
-        className="absolute inset-y-0 left-0 w-16 z-10 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(to right, var(--color-paper), transparent)",
-        }}
-      />
-      <div
-        className="w-full rounded-xl border border-hairline p-5 font-mono text-[11px] leading-[1.7] shadow-sm"
-        style={{ backgroundColor: "var(--color-ink-soft)" }}
-      >
-        {/* traffic lights */}
-        <div
-          className="flex items-center gap-1.5 mb-3 pb-2 border-b border-hairline"
-        >
-          <span className="h-2 w-2 rounded-full bg-red-300" />
-          <span className="h-2 w-2 rounded-full bg-yellow-300" />
-          <span className="h-2 w-2 rounded-full bg-green-300" />
-          <span
-            className="ml-2 text-[10px] tracking-wide"
-            style={{ color: "var(--color-paper-dim)", opacity: 0.5 }}
-          >
-            srivani.py
-          </span>
-        </div>
-        <div className="overflow-hidden">
-          {CODE_LINES.slice(0, visibleLines).map((line, i) => (
-            <div key={i} className="whitespace-pre" style={getStyle(line)}>
-              {line === "" ? "\u00A0" : line}
-            </div>
-          ))}
-          {visibleLines <= CODE_LINES.length && (
-            <span
-              className={`inline-block w-1.5 h-3 bg-signal align-middle ${
-                cursor ? "opacity-100" : "opacity-0"
-              }`}
-            />
-          )}
-        </div>
-      </div>
-    </div>
+    <a
+      href={p.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.5rem",
+        padding: full ? "1.4rem 1.5rem 1.5rem" : "1.3rem 1.4rem 1.4rem",
+        border: "1px solid var(--border)",
+        borderRadius: "0.7rem",
+        background: "var(--surface)",
+        color: "var(--ink)",
+        textDecoration: "none",
+        boxShadow: hovered ? "0 14px 40px rgba(0,0,0,0.13)" : "0 4px 16px rgba(0,0,0,0.05)",
+        transform: hovered ? "translateY(-4px)" : "translateY(0)",
+        borderColor: hovered ? "var(--accent)" : "var(--border)",
+        transition: "transform 240ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 240ms ease, border-color 200ms ease",
+      }}
+    >
+      <span style={{ position: "absolute", top: full ? "1.2rem" : "1.1rem", right: full ? "1.2rem" : "1.1rem", fontSize: "0.95rem", color: "var(--muted)" }}>↗</span>
+      <h3 style={{ margin: 0, paddingRight: "1.2rem", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: full ? "1.5rem" : "1.4rem", fontWeight: 700, lineHeight: 1.2, color: "var(--ink)" }}>{p.name}</h3>
+      <p style={{ margin: full ? "0.15rem 0 0" : 0, fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.92rem", lineHeight: 1.62, color: "var(--fg)" }}>{full ? p.description : p.short}</p>
+      {full && <p style={{ margin: "0.65rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", fontWeight: 600, color: "var(--accent)" }}>{p.linkLabel} →</p>}
+      <p style={{ margin: full ? "0.55rem 0 0" : "0.4rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.76rem", letterSpacing: "0.02em", color: "var(--muted)" }}>{p.stack.join("  ·  ")}</p>
+    </a>
   );
 }
 
-// ── Dark mode context ─────────────────────────────────────────────────────────
-import { createContext } from "react";
-const DarkCtx = createContext(false);
-
-// ── Nav ───────────────────────────────────────────────────────────────────────
-const NAV = [
-  { href: "#about", label: "about" },
-  { href: "#work", label: "work" },
-  { href: "#projects", label: "projects" },
-  { href: "#stack", label: "stack" },
-  { href: "#contact", label: "contact" },
-];
-
-function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
+// ── Home page ──────────────────────────────────────────────────────────────────
+function HomePage({ go }: { go: (p: Page) => void }) {
+  const [linkHover, setLinkHover] = useState<string | null>(null);
+  const [pillHover, setPillHover] = useState(false);
   return (
-    <header className="sticky top-0 z-50 border-b border-hairline bg-paper/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <a href="#top" className="font-mono text-sm tracking-tight text-ink">
-          srivani<span className="text-signal">.</span>konda
-        </a>
-        <nav className="hidden gap-7 font-mono text-xs uppercase tracking-[0.18em] text-paper-dim sm:flex">
-          {NAV.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="hover:text-signal transition-colors"
-            >
-              {item.label}
+    <div>
+      <header style={{ paddingTop: "1.2rem" }}>
+        <p style={{ margin: "0 0 0.9rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>
+          AI / ML Engineer · Dublin, Ireland
+        </p>
+        <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.8rem, 6vw, 4.2rem)", fontWeight: 600, lineHeight: 1.02, letterSpacing: "-0.015em", color: "var(--ink)" }}>
+          I build systems that learn from noisy data.
+        </h1>
+        <p style={{ margin: "1.4rem 0 0", maxWidth: "40rem", fontFamily: "'Newsreader', Georgia, serif", fontSize: "1.3rem", fontWeight: 400, lineHeight: 1.5, color: "var(--fg)" }}>
+          Trading agents, diagnostic pipelines, and the GenAI plumbing in between — I'm most at home at the intersection of research and deployment.
+        </p>
+        <p style={{ margin: "1rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.95rem", color: "var(--muted)" }}>
+          <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: "9999px", background: "#4a9b6a", marginRight: 8, verticalAlign: "middle" }} />
+          Open to work · Dublin · Cork · Remote
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.4rem", paddingTop: "1.5rem" }}>
+          {socials.map((s) => (
+            <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"
+              onMouseEnter={() => setLinkHover(s.label)}
+              onMouseLeave={() => setLinkHover(null)}
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1rem", color: linkHover === s.label ? "var(--accent)" : "var(--ink)", textDecoration: "none", transition: "color 160ms ease" }}>
+              {s.label}<span style={{ fontSize: "0.85rem", color: "var(--accent)" }}>↗</span>
             </a>
           ))}
-        </nav>
-        <div className="flex items-center gap-3">
-          {/* dark/light toggle */}
-          <button
-            onClick={toggle}
-            aria-label="Toggle dark mode"
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-hairline text-paper-dim hover:border-signal hover:text-signal transition-colors"
-          >
-            {dark ? (
-              /* sun icon */
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-                <circle cx="12" cy="12" r="5"/>
-                <line x1="12" y1="1" x2="12" y2="3"/>
-                <line x1="12" y1="21" x2="12" y2="23"/>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                <line x1="1" y1="12" x2="3" y2="12"/>
-                <line x1="21" y1="12" x2="23" y2="12"/>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-              </svg>
-            ) : (
-              /* moon icon */
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-              </svg>
-            )}
+        </div>
+      </header>
+
+      {/* About */}
+      <section style={{ paddingTop: "4rem" }}>
+        <p style={{ margin: "0 0 0.5rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>About</p>
+        <p style={{ margin: 0, maxWidth: "46rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1.12rem", lineHeight: 1.72, color: "var(--fg)" }}>
+          I'm Srivani — a CS grad specialising in AI & ML, currently doing my MSc at UCD. I got into machine learning because I liked the idea of writing code that figures things out on its own, and that's still what drives most of what I build. Over the past couple of years I've shipped a reinforcement-learning trading system that got published, built a Gemini-powered diagnostic tool that's live on Streamlit, and put together a multimodal learning app from scratch. Reading papers on a Monday, pushing something to production by Friday.
+        </p>
+      </section>
+
+      {/* Selected Work */}
+      <section style={{ paddingTop: "4rem" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1.25rem", marginBottom: "1.4rem", flexWrap: "wrap" }}>
+          <div>
+            <p style={{ margin: "0 0 0.35rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>Selected Work</p>
+            <h2 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "2rem", fontWeight: 600, lineHeight: 1.1, letterSpacing: "-0.01em", color: "var(--ink)" }}>Things I've built</h2>
+          </div>
+          <button onClick={() => go("projects")}
+            onMouseEnter={() => setPillHover(true)}
+            onMouseLeave={() => setPillHover(false)}
+            style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", cursor: "pointer", border: "1px solid var(--border)", borderRadius: "9999px", background: pillHover ? "var(--accent-soft)" : "none", borderColor: pillHover ? "var(--accent)" : "var(--border)", color: "var(--ink)", padding: "0.45rem 0.95rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.9rem", fontWeight: 600, transition: "background-color 160ms ease, border-color 160ms ease", whiteSpace: "nowrap" }}>
+            All projects ↗
           </button>
-          <a
-            href={`mailto:${profile.email}`}
-            className="font-mono text-xs uppercase tracking-[0.18em] text-signal underline-offset-4 hover:underline sm:hidden"
-          >
-            contact
-          </a>
         </div>
-      </div>
-    </header>
-  );
-}
-
-// ── Hero (first screen only — name + tagline + buttons) ───────────────────────
-function Hero() {
-  return (
-    <section
-      id="top"
-      className="relative mx-auto max-w-5xl px-6 flex flex-col justify-center min-h-[calc(100vh-57px)] overflow-hidden"
-    >
-      <CodePanel />
-
-      <div className="relative z-10 max-w-lg">
-        <h1 className="font-display text-[clamp(3rem,7vw,5.2rem)] font-medium leading-[0.96] tracking-tight text-ink">
-          {profile.name}
-        </h1>
-        <p className="mt-4 font-mono text-sm uppercase tracking-[0.25em] text-amber">
-          {profile.role} · {profile.location}
-        </p>
-        <p className="mt-5 text-base leading-relaxed text-paper-dim">
-          {profile.tagline}
-        </p>
-        <div className="mt-3">
-          <span className="inline-flex items-center gap-2 rounded-full border border-signal/30 bg-signal/8 px-3 py-1 font-mono text-xs text-signal">
-            <span className="h-1.5 w-1.5 rounded-full bg-signal" />
-            {profile.availability}
-          </span>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))", gap: "1rem" }}>
+          {projects.slice(0, 3).map((p) => <ProjectCard key={p.name} p={p} />)}
         </div>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <a
-            href="#projects"
-            className="rounded-full bg-signal px-5 py-2.5 font-mono text-xs uppercase tracking-[0.18em] text-paper"
-          >
-            View projects
-          </a>
-          <a
-            href="#contact"
-            className="rounded-full border border-hairline px-5 py-2.5 font-mono text-xs uppercase tracking-[0.18em] text-ink hover:border-signal hover:text-signal"
-          >
-            Let's collaborate
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ── About (visible after scroll) ──────────────────────────────────────────────
-function About() {
-  return (
-    <section id="about" className="mx-auto max-w-5xl px-6 py-24">
-      <SectionLabel index="00" label="// init" />
-      <p className="max-w-2xl text-lg leading-relaxed text-paper-dim">
-        {profile.summary}
-      </p>
-      <div className="mt-12 grid gap-6 border-t border-hairline pt-10 sm:grid-cols-2">
-        {education.map((ed) => (
-          <div key={ed.school}>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-amber">
-              {ed.period}
-            </p>
-            <p className="mt-2 font-display text-lg text-ink">{ed.school}</p>
-            <p className="text-sm text-paper-dim">{ed.degree}</p>
-            <p className="font-mono text-xs text-paper-dim/60">
-              {ed.detail} · {ed.location}
-            </p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// ── Work ──────────────────────────────────────────────────────────────────────
-function Work() {
-  return (
-    <section id="work" className="mx-auto max-w-5xl px-6 py-24">
-      <SectionLabel index="01" label="// work" />
-      <div className="space-y-10">
-        {experience.map((job) => (
-          <div
-            key={job.role}
-            className="grid gap-4 border-b border-hairline/60 pb-8 last:border-none sm:grid-cols-[190px_1fr]"
-          >
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.15em] text-amber">
-                {job.period}
-              </p>
-              <p className="mt-1 text-xs text-paper-dim/60">{job.location}</p>
-            </div>
-            <div>
-              <h3 className="font-display text-lg text-ink">{job.role}</h3>
-              <p className="mb-3 font-mono text-xs text-signal">{job.org}</p>
-              <ul className="space-y-1.5">
-                {job.points.map((pt, i) => (
-                  <li
-                    key={i}
-                    className="flex gap-3 text-sm leading-relaxed text-paper-dim"
-                  >
-                    <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-hairline" />
-                    {pt}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// ── Projects (2 → 3 → 2 layout) ──────────────────────────────────────────────
-function ProjectCard({ project }: { project: (typeof projects)[number] }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="rounded-xl border border-hairline bg-ink-soft p-5 flex flex-col gap-3">
-      <h3 className="font-display text-lg text-ink leading-snug">
-        {project.name}
-      </h3>
-      <p
-        className={`text-sm leading-relaxed text-paper-dim flex-1 ${
-          open ? "" : "line-clamp-3"
-        }`}
-      >
-        {project.description}
-      </p>
-      {project.description.length > 160 && (
-        <button
-          onClick={() => setOpen((o) => !o)}
-          className="self-start font-mono text-xs text-signal hover:underline"
-        >
-          {open ? "less" : "more"}
-        </button>
-      )}
-      <div className="flex flex-wrap gap-1.5 mt-auto">
-        {project.stack.map((s) => (
-          <span
-            key={s}
-            className="rounded border border-hairline bg-paper px-2 py-0.5 font-mono text-[10px] text-paper-dim"
-          >
-            {s}
-          </span>
-        ))}
-      </div>
-      {project.link && (
-        <a
-          href={project.link.url}
-          target="_blank"
-          rel="noreferrer"
-          className="self-start font-mono text-xs text-signal hover:underline"
-        >
-          {project.link.label} →
-        </a>
-      )}
+      </section>
     </div>
   );
 }
 
-function Projects() {
-  // Layout: row1=2, row2=3, row3=2 (total 5 projects + overflow in row of 2)
-  const row1 = projects.slice(0, 2);
-  const row2 = projects.slice(2, 5);
-  const row3 = projects.slice(5);
-
+// ── Projects page ──────────────────────────────────────────────────────────────
+function ProjectsPage() {
   return (
-    <section id="projects" className="mx-auto max-w-5xl px-6 py-24">
-      <SectionLabel index="02" label="// projects" />
-
-      <div className="flex flex-col gap-4">
-        {/* Row 1 — 2 cards */}
-        <div className="grid gap-4 sm:grid-cols-2">
-          {row1.map((p) => (
-            <ProjectCard key={p.name} project={p} />
-          ))}
-        </div>
-
-        {/* Row 2 — 3 cards */}
-        {row2.length > 0 && (
-          <div className="grid gap-4 sm:grid-cols-3">
-            {row2.map((p) => (
-              <ProjectCard key={p.name} project={p} />
-            ))}
-          </div>
-        )}
-
-        {/* Row 3 — 2 cards (overflow) */}
-        {row3.length > 0 && (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {row3.map((p) => (
-              <ProjectCard key={p.name} project={p} />
-            ))}
-          </div>
-        )}
+    <div>
+      <header style={{ maxWidth: "44rem", marginBottom: "2rem" }}>
+        <p style={{ margin: "0 0 0.5rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>Projects</p>
+        <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.4rem, 5vw, 3.2rem)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.015em", color: "var(--ink)" }}>Research that ships</h1>
+        <p style={{ margin: "0.8rem 0 0", fontFamily: "'Newsreader', Georgia, serif", fontSize: "1.15rem", lineHeight: 1.5, color: "var(--muted)" }}>
+          From a published RL trading system to a live diagnostic tool — the through-line is turning models into things people can actually use.
+        </p>
+      </header>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1rem" }}>
+        {projects.map((p) => <ProjectCard key={p.name} p={p} full />)}
       </div>
-    </section>
+    </div>
   );
 }
 
-// ── Stack ─────────────────────────────────────────────────────────────────────
-function Stack() {
+// ── Skills page ────────────────────────────────────────────────────────────────
+function SkillsPage() {
   return (
-    <section id="stack" className="mx-auto max-w-5xl px-6 py-24">
-      <SectionLabel index="03" label="// stack" />
-
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {Object.entries(skills).map(([category, items]) => (
-          <div
-            key={category}
-            className="rounded-xl border border-hairline bg-ink-soft p-5 flex flex-col gap-3"
-          >
-            {/* category as small signal badge, no divider */}
-            <span className="self-start rounded-full bg-signal/10 px-2.5 py-0.5 font-mono text-[10px] text-signal tracking-wide">
-              {category}
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {items.map((item) => (
-                <span
-                  key={item}
-                  className="rounded border border-hairline bg-paper px-2.5 py-1 font-mono text-xs text-paper-dim"
-                >
-                  {item}
-                </span>
+    <div>
+      <header style={{ maxWidth: "44rem", marginBottom: "2.2rem" }}>
+        <p style={{ margin: "0 0 0.5rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>Toolkit</p>
+        <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.4rem, 5vw, 3.2rem)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.015em", color: "var(--ink)" }}>Skills & recognition</h1>
+      </header>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.6rem 2rem" }}>
+        {skills.map((cat) => (
+          <div key={cat.label}>
+            <h3 style={{ margin: "0 0 0.7rem", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.25rem", fontWeight: 700, color: "var(--ink)" }}>{cat.label}</h3>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+              {cat.items.map((s) => (
+                <span key={s} style={{ display: "inline-flex", padding: "0.32rem 0.7rem", border: "1px solid var(--border)", borderRadius: "9999px", background: "var(--surface)", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.82rem", color: "var(--fg)" }}>{s}</span>
               ))}
             </div>
           </div>
         ))}
       </div>
 
-      {/* Hackathons + Certifications side by side */}
-      <div className="mt-12 grid gap-10 border-t border-hairline pt-12 sm:grid-cols-2">
+      <div style={{ height: 1, background: "var(--border-soft)", margin: "3rem 0 2.4rem" }} />
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "2.4rem" }}>
         <div>
-          <p className="mb-5 font-mono text-xs uppercase tracking-[0.18em] text-amber">
-            Hackathons
-          </p>
-          <ul className="space-y-4">
-            {accomplishments.map((a) => (
-              <li key={a.title} className="flex gap-3">
-                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-signal" />
-                <div>
-                  <p className="text-sm text-ink">{a.title}</p>
-                  <p className="text-xs text-paper-dim mt-0.5">{a.detail}</p>
-                </div>
-              </li>
+          <p style={{ margin: "0 0 1rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>Awards</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.1rem" }}>
+            {awards.map((a) => (
+              <div key={a.title}>
+                <p style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.25rem", fontWeight: 700, lineHeight: 1.25, color: "var(--ink)" }}>{a.title}</p>
+                <p style={{ margin: "0.15rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.92rem", lineHeight: 1.5, color: "var(--muted)" }}>{a.detail}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
         <div>
-          <p className="mb-5 font-mono text-xs uppercase tracking-[0.18em] text-amber">
-            Certifications
-          </p>
-          <ul className="space-y-4">
-            {certifications.map((c) => (
-              <li key={c} className="flex gap-3">
-                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-signal" />
-                <p className="text-sm text-paper-dim">{c}</p>
-              </li>
+          <p style={{ margin: "0 0 1rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>Certifications</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.7rem" }}>
+            {certs.map((c) => (
+              <p key={c} style={{ margin: 0, fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.98rem", lineHeight: 1.5, color: "var(--fg)" }}>{c}</p>
             ))}
-          </ul>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
-// ── Contact ───────────────────────────────────────────────────────────────────
-function Contact() {
+// ── About page ─────────────────────────────────────────────────────────────────
+function AboutPage() {
+  const [linkHover, setLinkHover] = useState<string | null>(null);
   return (
-    <section id="contact" className="mx-auto max-w-5xl px-6 py-24">
-      <SectionLabel index="04" label="// contact" />
-      <h2 className="max-w-xl font-display text-3xl leading-snug text-ink sm:text-4xl">
-        Let's build something worth deploying.
-      </h2>
-      <p className="mt-3 text-sm text-paper-dim">
-        Open to AI/ML, GenAI, and SWE roles in Dublin, Cork, or remote.
-      </p>
+    <div>
+      <header style={{ maxWidth: "44rem", marginBottom: "2.4rem" }}>
+        <p style={{ margin: "0 0 0.5rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>About</p>
+        <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.4rem, 5vw, 3.2rem)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.015em", color: "var(--ink)" }}>The path so far</h1>
+        <p style={{ margin: "0.8rem 0 0", fontFamily: "'Newsreader', Georgia, serif", fontSize: "1.15rem", lineHeight: 1.55, color: "var(--muted)" }}>
+          A CS grad specialising in AI & ML, now on an MSc at UCD — building at the seam between research and production.
+        </p>
+      </header>
 
-      <div className="mt-8 flex flex-wrap gap-4 items-center">
-        <a
-          href={`mailto:${profile.email}`}
-          className="flex items-center gap-2 rounded-full border border-hairline px-5 py-2.5 font-mono text-xs text-ink hover:border-signal hover:text-signal transition-colors"
-        >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.907 1.528-1.148C21.69 2.28 24 3.434 24 5.457z" />
-          </svg>
-          {profile.email}
-        </a>
-        <a
-          href={profile.linkedin}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 rounded-full border border-hairline px-5 py-2.5 font-mono text-xs text-ink hover:border-signal hover:text-signal transition-colors"
-        >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-          </svg>
-          LinkedIn
-        </a>
-        <a
-          href={profile.github}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 rounded-full border border-hairline px-5 py-2.5 font-mono text-xs text-ink hover:border-signal hover:text-signal transition-colors"
-        >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-          </svg>
-          GitHub
-        </a>
-      </div>
-    </section>
+      {/* Experience */}
+      <section style={{ marginBottom: "3rem" }}>
+        <h2 style={{ margin: "0 0 1.4rem", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.7rem", fontWeight: 600, color: "var(--ink)" }}>Experience</h2>
+        <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+          {experience.map((e) => (
+            <div key={e.role} style={{ borderLeft: "2px solid var(--border)", paddingLeft: "1.3rem" }}>
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
+                <h3 style={{ margin: 0, fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1.1rem", fontWeight: 700, color: "var(--ink)" }}>{e.role}</h3>
+                <span style={{ fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", color: "var(--muted)", whiteSpace: "nowrap" }}>{e.period}</span>
+              </div>
+              <p style={{ margin: "0.2rem 0 0.7rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.95rem", fontWeight: 600, color: "var(--accent)" }}>{e.orgLine}</p>
+              <ul style={{ margin: 0, paddingLeft: "1.1rem", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                {e.points.map((pt) => (
+                  <li key={pt} style={{ fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.95rem", lineHeight: 1.6, color: "var(--fg)" }}>{pt}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Education */}
+      <section style={{ marginBottom: "3rem" }}>
+        <h2 style={{ margin: "0 0 1.4rem", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.7rem", fontWeight: 600, color: "var(--ink)" }}>Education</h2>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.4rem" }}>
+          {education.map((ed) => (
+            <div key={ed.school} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap", paddingBottom: "1.3rem", borderBottom: "1px solid var(--border-soft)" }}>
+              <div>
+                <h3 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.35rem", fontWeight: 700, lineHeight: 1.2, color: "var(--ink)" }}>{ed.school}</h3>
+                <p style={{ margin: "0.2rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.98rem", color: "var(--fg)" }}>{ed.degree}</p>
+                <p style={{ margin: "0.1rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.9rem", color: "var(--muted)" }}>{ed.detail} · {ed.location}</p>
+              </div>
+              <span style={{ fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", color: "var(--muted)", whiteSpace: "nowrap" }}>{ed.period}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Contact card */}
+      <section style={{ border: "1px solid var(--border)", borderRadius: "0.8rem", background: "var(--surface)", padding: "1.8rem 2rem" }}>
+        <p style={{ margin: "0 0 0.4rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>Get in touch</p>
+        <h2 style={{ margin: "0 0 1rem", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.7rem", fontWeight: 600, color: "var(--ink)" }}>Let's build something.</h2>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.4rem" }}>
+          {socials.map((s) => (
+            <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"
+              onMouseEnter={() => setLinkHover(s.label)}
+              onMouseLeave={() => setLinkHover(null)}
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1rem", color: linkHover === s.label ? "var(--accent)" : "var(--ink)", textDecoration: "none", transition: "color 160ms ease" }}>
+              {s.label}<span style={{ fontSize: "0.85rem", color: "var(--accent)" }}>↗</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }
 
-// ── Footer ────────────────────────────────────────────────────────────────────
-function Footer() {
+// ── Nav ────────────────────────────────────────────────────────────────────────
+function Nav({ page, go, theme, toggleTheme }: { page: Page; go: (p: Page) => void; theme: Theme; toggleTheme: () => void }) {
+  const navItems: { label: string; page: Page }[] = [
+    { label: "Home", page: "home" },
+    { label: "Projects", page: "projects" },
+    { label: "Skills", page: "skills" },
+    { label: "About", page: "about" },
+  ];
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [toggleHov, setToggleHov] = useState(false);
+
   return (
-    <footer className="border-t border-hairline px-6 py-6">
-      <div className="mx-auto flex max-w-5xl items-center justify-between font-mono text-xs text-paper-dim/40">
-        <span>© {new Date().getFullYear()} Srivani Konda</span>
-        <span>{profile.location}</span>
-      </div>
-    </footer>
+    <>
+      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", padding: "1.7rem 0 0.4rem", flexWrap: "wrap" }}>
+        <button onClick={() => go("home")} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.55rem", fontWeight: 600, letterSpacing: "-0.01em", color: "var(--ink)" }}>
+          Srivani Konda
+        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "1.35rem" }}>
+          {navItems.map((item) => (
+            <button key={item.page} onClick={() => go(item.page)}
+              onMouseEnter={() => setHoveredNav(item.label)}
+              onMouseLeave={() => setHoveredNav(null)}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: "0.2rem 0", position: "relative", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1rem", color: hoveredNav === item.label ? "var(--ink)" : "var(--muted)", transition: "color 160ms ease" }}>
+              {item.label}
+              {page === item.page && <span style={{ position: "absolute", left: 0, right: 0, bottom: -1, height: "1.5px", background: "var(--accent)" }} />}
+            </button>
+          ))}
+          <button onClick={toggleTheme}
+            onMouseEnter={() => setToggleHov(true)}
+            onMouseLeave={() => setToggleHov(false)}
+            aria-label="Toggle theme"
+            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "2rem", height: "2rem", borderRadius: "9999px", cursor: "pointer", border: "1px solid var(--border)", background: "var(--accent-soft)", color: "var(--ink)", fontSize: "0.95rem", transition: "transform 160ms ease", transform: toggleHov ? "translateY(-1px)" : "none" }}>
+            {theme === "light" ? "☾" : "☀"}
+          </button>
+        </div>
+      </nav>
+      <div style={{ height: 1, background: "var(--border-soft)", marginBottom: "2.6rem" }} />
+    </>
   );
 }
 
-// ── App ───────────────────────────────────────────────────────────────────────
+// ── App ────────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [dark, setDark] = useState(true);
+  const [page, setPage] = useState<Page>("home");
+  const [theme, setTheme] = useState<Theme>("dark");
 
-  const darkVars = {
-    backgroundColor: "#0f1210",
-    "--color-ink": "#edeae2",
-    "--color-paper": "#0f1210",
-    "--color-paper-dim": "#8a8880",
-    "--color-hairline": "#2a2f2c",
-    "--color-ink-soft": "#161a17",
-    "--color-signal": "#4ade80",
-    "--color-amber": "#f59e0b",
-  } as React.CSSProperties;
+  const go = (p: Page) => {
+    setPage(p);
+    window.scrollTo(0, 0);
+  };
 
-  const lightVars = {
-    backgroundColor: "#faf9f6",
-    "--color-ink": "#1c1f1d",
-    "--color-paper": "#faf9f6",
-    "--color-paper-dim": "#5d5b55",
-    "--color-hairline": "#ddd9d0",
-    "--color-ink-soft": "#f1efe9",
-    "--color-signal": "#1f9d57",
-    "--color-amber": "#b3791f",
+  const t = themes[theme];
+  const rootStyle = {
+    ...t,
+    minHeight: "100vh",
+    background: "var(--bg)",
+    color: "var(--fg)",
+    fontFamily: "'Satoshi', system-ui, sans-serif",
+    transition: "background-color 250ms ease, color 250ms ease",
   } as React.CSSProperties;
 
   return (
-    <DarkCtx.Provider value={dark}>
-      <div
-        className="min-h-screen text-ink"
-        style={dark ? darkVars : lightVars}
-      >
-        <Nav dark={dark} toggle={() => setDark((d) => !d)} />
-        <Hero />
-        <About />
-        <Work />
-        <Projects />
-        <Stack />
-        <Contact />
-        <Footer />
+    <div style={rootStyle}>
+      <div style={{ width: "min(100%, 960px)", margin: "0 auto", padding: "0 28px 96px" }}>
+        <Nav page={page} go={go} theme={theme} toggleTheme={() => setTheme(t => t === "light" ? "dark" : "light")} />
+
+        {page === "home" && <HomePage go={go} />}
+        {page === "projects" && <ProjectsPage />}
+        {page === "skills" && <SkillsPage />}
+        {page === "about" && <AboutPage />}
+
+        <footer style={{ marginTop: "5rem", paddingTop: "1.6rem", borderTop: "1px solid var(--border-soft)", display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
+          <span style={{ fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", color: "var(--muted)" }}>Srivani Konda · Dublin, Ireland</span>
+          <span style={{ fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", color: "var(--muted)" }}>© 2026 · Designed with care</span>
+        </footer>
       </div>
-    </DarkCtx.Provider>
+    </div>
   );
 }

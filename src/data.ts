@@ -1,8 +1,9 @@
 export const profile = {
   name: "Srivani Konda",
   role: "AI / ML Engineer",
+  headline: "I build systems that learn from noisy data.",
   tagline:
-    "I build systems that learn from noisy data — trading agents, diagnostic pipelines, and the GenAI plumbing in between.",
+    "Trading agents, diagnostic pipelines, and the GenAI plumbing in between — I'm most at home at the intersection of research and deployment.",
   location: "Dublin, Ireland",
   availability: "Open to work · Dublin · Cork · Remote",
   email: "imkondasrivani@gmail.com",
