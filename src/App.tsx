@@ -43,10 +43,19 @@ function GmailIcon({ size = 18 }: { size?: number }) {
   );
 }
 
+function ResumeIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 4h5v5h6v11H6V4zm2 8h8v1H8v-1zm0 2h8v1H8v-1zm0 2h5v1H8v-1z" />
+    </svg>
+  );
+}
+
 function SocialIcon({ label, size }: { label: string; size?: number }) {
   if (label === "GitHub") return <GitHubIcon size={size} />;
   if (label === "LinkedIn") return <LinkedInIcon size={size} />;
   if (label === "Email") return <GmailIcon size={size} />;
+  if (label === "Resume") return <ResumeIcon size={size} />;
   return null;
 }
 
@@ -149,6 +158,7 @@ const socials = [
   { label: "GitHub", url: "https://github.com/srivanik8" },
   { label: "LinkedIn", url: "https://linkedin.com/in/srivani-konda" },
   { label: "Email", url: "mailto:imkondasrivani@gmail.com" },
+  { label: "Resume", url: "https://drive.google.com/file/d/18c9uv-t6_AcKsGsi8WhD5kC_0EeyoI2G/view?usp=sharing"},
 ];
 
 // ── SocialLink ─────────────────────────────────────────────────────────────────
@@ -218,7 +228,7 @@ function HomePage({ go }: { go: (p: Page) => void }) {
       <section style={{ paddingTop: "4rem" }}>
         <p style={{ margin: "0 0 0.5rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>About</p>
         <p style={{ margin: 0, maxWidth: "46rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1.12rem", lineHeight: 1.72, color: "var(--fg)" }}>
-          I'm Srivani — a CS grad specialising in AI & ML, currently doing my MSc at UCD. I got into machine learning because I liked the idea of writing code that figures things out on its own, and that's still what drives most of what I build. Over the past couple of years I've shipped a reinforcement-learning trading system that got published, built a Gemini-powered diagnostic tool that's live on Streamlit, and put together a multimodal learning app from scratch. Reading papers on a Monday, pushing something to production by Friday.
+          I'm Srivani — a CS grad specialising in AI & ML, currently doing my MSc at UCD. I got into machine learning because I liked the idea of writing code that figures things out on its own, and that's still what drives most of what I build. Over the past couple of years I've shipped a reinforcement-learning trading system that got published, built a Gemini-powered diagnostic tool that's live on Streamlit, and put together a multimodal learning app from scratch. Reading papers on a Monday, and pushing something to production by Friday is what my week usually looks.
         </p>
       </section>
 
@@ -252,9 +262,6 @@ function ProjectsPage() {
       <header style={{ maxWidth: "44rem", marginBottom: "2rem" }}>
         <p style={{ margin: "0 0 0.5rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>Projects</p>
         <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.4rem, 5vw, 3.2rem)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.015em", color: "var(--ink)" }}>Research that ships</h1>
-        <p style={{ margin: "0.8rem 0 0", fontFamily: "'Newsreader', Georgia, serif", fontSize: "1.15rem", lineHeight: 1.5, color: "var(--muted)" }}>
-          From a published RL trading system to a live diagnostic tool — the through-line is turning models into things people can actually use.
-        </p>
       </header>
 
       {/* Row 1: 2 cards */}
@@ -275,7 +282,7 @@ function SkillsPage() {
     <div>
       <header style={{ maxWidth: "44rem", marginBottom: "2.2rem" }}>
         <p style={{ margin: "0 0 0.5rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>Toolkit</p>
-        <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.4rem, 5vw, 3.2rem)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.015em", color: "var(--ink)" }}>Skills & recognition</h1>
+        <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.4rem, 5vw, 3.2rem)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.015em", color: "var(--ink)" }}>Skills & Recognition</h1>
       </header>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.6rem 2rem" }}>
         {skills.map((cat) => (
@@ -324,9 +331,6 @@ function AboutPage() {
       <header style={{ maxWidth: "44rem", marginBottom: "2.4rem" }}>
         <p style={{ margin: "0 0 0.5rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>About</p>
         <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.4rem, 5vw, 3.2rem)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.015em", color: "var(--ink)" }}>The path so far</h1>
-        <p style={{ margin: "0.8rem 0 0", fontFamily: "'Newsreader', Georgia, serif", fontSize: "1.15rem", lineHeight: 1.55, color: "var(--muted)" }}>
-          A CS grad specialising in AI & ML, now on an MSc at UCD — building at the seam between research and production.
-        </p>
       </header>
 
       <section style={{ marginBottom: "3rem" }}>
@@ -365,7 +369,7 @@ function AboutPage() {
         </div>
       </section>
 
-      <section style={{ border: "1px solid var(--border)", borderRadius: "0.8rem", background: "var(--surface)", padding: "1.8rem 2rem" }}>
+      <section style={{ padding: "1.8rem 2rem" }}>
         <p style={{ margin: "0 0 0.4rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>Get in touch</p>
         <h2 style={{ margin: "0 0 1rem", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.7rem", fontWeight: 600, color: "var(--ink)" }}>Let's build something.</h2>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.6rem" }}>
