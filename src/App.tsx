@@ -1,76 +1,89 @@
 import { useState } from "react";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
 type Page = "home" | "projects" | "skills" | "about";
 type Theme = "light" | "dark";
 
-// ── Theme tokens ───────────────────────────────────────────────────────────────
 const themes = {
   light: {
-    "--bg": "#f0ece0",
-    "--surface": "#ece7db",
-    "--surface-strong": "#e6e0d2",
-    "--fg": "#1a232c",
-    "--ink": "#0f1820",
-    "--muted": "#5a6472",
-    "--accent": "#9b4a3c",
-    "--accent-soft": "rgba(155,74,60,0.10)",
-    "--border": "rgba(15,24,32,0.16)",
-    "--border-soft": "rgba(15,24,32,0.09)",
+    "--bg": "#f0ece0", "--surface": "#ece7db", "--surface-strong": "#e6e0d2",
+    "--fg": "#1a232c", "--ink": "#0f1820", "--muted": "#5a6472",
+    "--accent": "#9b4a3c", "--accent-soft": "rgba(155,74,60,0.10)",
+    "--border": "rgba(15,24,32,0.16)", "--border-soft": "rgba(15,24,32,0.09)",
   },
   dark: {
-    "--bg": "#0f1419",
-    "--surface": "#161c23",
-    "--surface-strong": "#1c232c",
-    "--fg": "#c5c5c5",
-    "--ink": "#e2ddd3",
-    "--muted": "#9a948b",
-    "--accent": "#d19478",
-    "--accent-soft": "rgba(209,148,120,0.12)",
-    "--border": "rgba(212,207,197,0.16)",
-    "--border-soft": "rgba(212,207,197,0.09)",
+    "--bg": "#0f1419", "--surface": "#161c23", "--surface-strong": "#1c232c",
+    "--fg": "#c5c5c5", "--ink": "#e2ddd3", "--muted": "#9a948b",
+    "--accent": "#d19478", "--accent-soft": "rgba(209,148,120,0.12)",
+    "--border": "rgba(212,207,197,0.16)", "--border-soft": "rgba(212,207,197,0.09)",
   },
 } as const;
+
+// ── SVG Icons ──────────────────────────────────────────────────────────────────
+function GitHubIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+    </svg>
+  );
+}
+
+function LinkedInIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    </svg>
+  );
+}
+
+function GmailIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z" />
+    </svg>
+  );
+}
+
+function SocialIcon({ label, size }: { label: string; size?: number }) {
+  if (label === "GitHub") return <GitHubIcon size={size} />;
+  if (label === "LinkedIn") return <LinkedInIcon size={size} />;
+  if (label === "Email") return <GmailIcon size={size} />;
+  return null;
+}
 
 // ── Data ───────────────────────────────────────────────────────────────────────
 const projects = [
   {
     name: "Algorithmic Trading using RL",
     stack: ["PyTorch", "Gymnasium", "Transformers", "NLTK", "Pandas"],
-    short: "PPO, DQN & A2C agents trading under simulated markets at 92% strategy accuracy — with a sentiment pipeline feeding the signal. Peer-reviewed.",
-    description: "Trained PPO, DQN and A2C agents to trade under simulated market conditions, reaching 92% strategy accuracy. Built a sentiment pipeline on top — Transformers and NLTK reading financial news to feed signal into the agents' decisions. Published in a peer-reviewed journal.",
+    desc: "Trained RL agents to trade in simulated markets and fed them live news sentiment — hit 92% strategy accuracy. Published in a peer-reviewed journal.",
     linkLabel: "Read the paper",
     url: "https://ijsrem.com/download/algorithmic-trading-using-machine-learning",
   },
   {
     name: "EMR Analysis & Disease Prediction",
     stack: ["Python", "Streamlit", "Gemini API", "Scikit-learn"],
-    short: "A diagnostic system pairing Scikit-learn on structured symptoms with Gemini reading unstructured EMRs. 87% accuracy, deployed live.",
-    description: "End-to-end diagnostic system: Scikit-learn on structured symptom data, Gemini reading unstructured EMRs and lab reports. RAG-style reasoning that maps free-text medical documents to structured outputs. 87% classification accuracy, deployed live.",
+    desc: "A diagnostic tool that reads both structured symptom data and raw medical documents, then gives a prediction. 87% accuracy, live on Streamlit.",
     linkLabel: "View on GitHub",
     url: "https://github.com/srivanik8/disease_prediction",
   },
   {
     name: "FunLearn",
     stack: ["Gemini", "React.js", "Whisper", "Vercel"],
-    short: "Gemini generates adaptive quizzes; Whisper TTS turns the same material into on-demand podcasts. Built and shipped solo.",
-    description: "Gemini generates adaptive quizzes from source material; Whisper TTS converts the same content into on-demand podcasts. Built and shipped solo, concept through deployment.",
+    desc: "Upload any material and get auto-generated quizzes or a podcast version of it. Built and deployed solo.",
     linkLabel: "Live demo",
     url: "https://fun-learn-nine.vercel.app",
   },
   {
     name: "QuickQuery",
     stack: ["MERN", "LangChain.js", "Gemini", "MongoDB"],
-    short: "Plain English into correct MongoDB queries in Python or JS, orchestrated by LangChain.js — plus a saved-query library.",
-    description: "MongoDB query assistant that converts plain English into correct queries in Python or JavaScript. LangChain.js orchestrates Gemini under the hood. Includes QuickSnippet — a saved-query library for revisiting generated queries.",
+    desc: "Type what you want in plain English and get the right MongoDB query back in Python or JS. Also saves your past queries.",
     linkLabel: "View on GitHub",
     url: "https://github.com/srivanik8/QuickQuery",
   },
   {
     name: "Vishayamitra",
     stack: ["Python", "Streamlit", "PandasAI"],
-    short: "A conversational data assistant — Streamlit front end, PandasAI natural-language querying over tabular data. Built as a team.",
-    description: "Conversational data assistant built as a team — Streamlit front end, PandasAI-driven natural language querying over tabular data. Contributed to the data-querying and bot logic.",
+    desc: "A chat interface for querying tabular data in plain language using PandasAI. Built as part of a team.",
     linkLabel: "View on GitHub",
     url: "https://github.com/srivanik8/vishayamitra",
   },
@@ -138,45 +151,47 @@ const socials = [
   { label: "Email", url: "mailto:imkondasrivani@gmail.com" },
 ];
 
+// ── SocialLink ─────────────────────────────────────────────────────────────────
+function SocialLink({ s, iconSize = 18 }: { s: typeof socials[0]; iconSize?: number }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <a href={s.url} target="_blank" rel="noopener noreferrer"
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1rem", color: hov ? "var(--accent)" : "var(--ink)", textDecoration: "none", transition: "color 160ms ease" }}>
+      <SocialIcon label={s.label} size={iconSize} />
+      {s.label}
+    </a>
+  );
+}
+
 // ── ProjectCard ────────────────────────────────────────────────────────────────
-function ProjectCard({ p, full = false }: { p: typeof projects[0]; full?: boolean }) {
+function ProjectCard({ p }: { p: typeof projects[0] }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <a
-      href={p.url}
-      target="_blank"
-      rel="noopener noreferrer"
+    <a href={p.url} target="_blank" rel="noopener noreferrer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.5rem",
-        padding: full ? "1.4rem 1.5rem 1.5rem" : "1.3rem 1.4rem 1.4rem",
-        border: "1px solid var(--border)",
-        borderRadius: "0.7rem",
-        background: "var(--surface)",
-        color: "var(--ink)",
-        textDecoration: "none",
+        display: "flex", flexDirection: "column", gap: "0.5rem",
+        padding: "1.4rem 1.5rem 1.5rem",
+        border: "1px solid var(--border)", borderRadius: "0.7rem",
+        background: "var(--surface)", color: "var(--ink)", textDecoration: "none",
         boxShadow: hovered ? "0 14px 40px rgba(0,0,0,0.13)" : "0 4px 16px rgba(0,0,0,0.05)",
         transform: hovered ? "translateY(-4px)" : "translateY(0)",
         borderColor: hovered ? "var(--accent)" : "var(--border)",
         transition: "transform 240ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 240ms ease, border-color 200ms ease",
-      }}
-    >
-      <span style={{ position: "absolute", top: full ? "1.2rem" : "1.1rem", right: full ? "1.2rem" : "1.1rem", fontSize: "0.95rem", color: "var(--muted)" }}>↗</span>
-      <h3 style={{ margin: 0, paddingRight: "1.2rem", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: full ? "1.5rem" : "1.4rem", fontWeight: 700, lineHeight: 1.2, color: "var(--ink)" }}>{p.name}</h3>
-      <p style={{ margin: full ? "0.15rem 0 0" : 0, fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.92rem", lineHeight: 1.62, color: "var(--fg)" }}>{full ? p.description : p.short}</p>
-      {full && <p style={{ margin: "0.65rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", fontWeight: 600, color: "var(--accent)" }}>{p.linkLabel} →</p>}
-      <p style={{ margin: full ? "0.55rem 0 0" : "0.4rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.76rem", letterSpacing: "0.02em", color: "var(--muted)" }}>{p.stack.join("  ·  ")}</p>
+      }}>
+      <h3 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, lineHeight: 1.2, color: "var(--ink)" }}>{p.name}</h3>
+      <p style={{ margin: 0, fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.92rem", lineHeight: 1.6, color: "var(--fg)" }}>{p.desc}</p>
+      <p style={{ margin: "0.5rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", fontWeight: 600, color: "var(--accent)" }}>{p.linkLabel} →</p>
+      <p style={{ margin: "0.3rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.76rem", letterSpacing: "0.02em", color: "var(--muted)" }}>{p.stack.join("  ·  ")}</p>
     </a>
   );
 }
 
 // ── Home page ──────────────────────────────────────────────────────────────────
 function HomePage({ go }: { go: (p: Page) => void }) {
-  const [linkHover, setLinkHover] = useState<string | null>(null);
   const [pillHover, setPillHover] = useState(false);
   return (
     <div>
@@ -187,26 +202,19 @@ function HomePage({ go }: { go: (p: Page) => void }) {
         <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.8rem, 6vw, 4.2rem)", fontWeight: 600, lineHeight: 1.02, letterSpacing: "-0.015em", color: "var(--ink)" }}>
           I build systems that learn from noisy data.
         </h1>
-        <p style={{ margin: "1.4rem 0 0", maxWidth: "40rem", fontFamily: "'Newsreader', Georgia, serif", fontSize: "1.3rem", fontWeight: 400, lineHeight: 1.5, color: "var(--fg)" }}>
+        <p style={{ margin: "1.4rem 0 0", maxWidth: "40rem", fontFamily: "'Newsreader', Georgia, serif", fontSize: "1.3rem", lineHeight: 1.5, color: "var(--fg)" }}>
           Trading agents, diagnostic pipelines, and the GenAI plumbing in between — I'm most at home at the intersection of research and deployment.
         </p>
         <p style={{ margin: "1rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.95rem", color: "var(--muted)" }}>
           <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: "9999px", background: "#4a9b6a", marginRight: 8, verticalAlign: "middle" }} />
           Open to work · Dublin · Cork · Remote
         </p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.4rem", paddingTop: "1.5rem" }}>
-          {socials.map((s) => (
-            <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"
-              onMouseEnter={() => setLinkHover(s.label)}
-              onMouseLeave={() => setLinkHover(null)}
-              style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1rem", color: linkHover === s.label ? "var(--accent)" : "var(--ink)", textDecoration: "none", transition: "color 160ms ease" }}>
-              {s.label}<span style={{ fontSize: "0.85rem", color: "var(--accent)" }}>↗</span>
-            </a>
-          ))}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.6rem", paddingTop: "1.5rem" }}>
+          {socials.map((s) => <SocialLink key={s.label} s={s} />)}
         </div>
       </header>
 
-      {/* About */}
+      {/* About blurb */}
       <section style={{ paddingTop: "4rem" }}>
         <p style={{ margin: "0 0 0.5rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>About</p>
         <p style={{ margin: 0, maxWidth: "46rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1.12rem", lineHeight: 1.72, color: "var(--fg)" }}>
@@ -224,11 +232,12 @@ function HomePage({ go }: { go: (p: Page) => void }) {
           <button onClick={() => go("projects")}
             onMouseEnter={() => setPillHover(true)}
             onMouseLeave={() => setPillHover(false)}
-            style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", cursor: "pointer", border: "1px solid var(--border)", borderRadius: "9999px", background: pillHover ? "var(--accent-soft)" : "none", borderColor: pillHover ? "var(--accent)" : "var(--border)", color: "var(--ink)", padding: "0.45rem 0.95rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.9rem", fontWeight: 600, transition: "background-color 160ms ease, border-color 160ms ease", whiteSpace: "nowrap" }}>
+            style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", cursor: "pointer", border: "1px solid", borderRadius: "9999px", background: pillHover ? "var(--accent-soft)" : "none", borderColor: pillHover ? "var(--accent)" : "var(--border)", color: "var(--ink)", padding: "0.45rem 0.95rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.9rem", fontWeight: 600, transition: "background-color 160ms ease, border-color 160ms ease", whiteSpace: "nowrap" }}>
             All projects ↗
           </button>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))", gap: "1rem" }}>
+        {/* 3 featured cards in a fixed 3-col grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
           {projects.slice(0, 3).map((p) => <ProjectCard key={p.name} p={p} />)}
         </div>
       </section>
@@ -236,7 +245,7 @@ function HomePage({ go }: { go: (p: Page) => void }) {
   );
 }
 
-// ── Projects page ──────────────────────────────────────────────────────────────
+// ── Projects page — 2-col then 3-col rows ──────────────────────────────────────
 function ProjectsPage() {
   return (
     <div>
@@ -247,8 +256,14 @@ function ProjectsPage() {
           From a published RL trading system to a live diagnostic tool — the through-line is turning models into things people can actually use.
         </p>
       </header>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1rem" }}>
-        {projects.map((p) => <ProjectCard key={p.name} p={p} full />)}
+
+      {/* Row 1: 2 cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1rem", marginBottom: "1rem" }}>
+        {projects.slice(0, 2).map((p) => <ProjectCard key={p.name} p={p} />)}
+      </div>
+      {/* Row 2: 3 cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
+        {projects.slice(2, 5).map((p) => <ProjectCard key={p.name} p={p} />)}
       </div>
     </div>
   );
@@ -304,7 +319,6 @@ function SkillsPage() {
 
 // ── About page ─────────────────────────────────────────────────────────────────
 function AboutPage() {
-  const [linkHover, setLinkHover] = useState<string | null>(null);
   return (
     <div>
       <header style={{ maxWidth: "44rem", marginBottom: "2.4rem" }}>
@@ -315,7 +329,6 @@ function AboutPage() {
         </p>
       </header>
 
-      {/* Experience */}
       <section style={{ marginBottom: "3rem" }}>
         <h2 style={{ margin: "0 0 1.4rem", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.7rem", fontWeight: 600, color: "var(--ink)" }}>Experience</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
@@ -336,7 +349,6 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Education */}
       <section style={{ marginBottom: "3rem" }}>
         <h2 style={{ margin: "0 0 1.4rem", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.7rem", fontWeight: 600, color: "var(--ink)" }}>Education</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "1.4rem" }}>
@@ -353,19 +365,11 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Contact card */}
       <section style={{ border: "1px solid var(--border)", borderRadius: "0.8rem", background: "var(--surface)", padding: "1.8rem 2rem" }}>
         <p style={{ margin: "0 0 0.4rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>Get in touch</p>
         <h2 style={{ margin: "0 0 1rem", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.7rem", fontWeight: 600, color: "var(--ink)" }}>Let's build something.</h2>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.4rem" }}>
-          {socials.map((s) => (
-            <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"
-              onMouseEnter={() => setLinkHover(s.label)}
-              onMouseLeave={() => setLinkHover(null)}
-              style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1rem", color: linkHover === s.label ? "var(--accent)" : "var(--ink)", textDecoration: "none", transition: "color 160ms ease" }}>
-              {s.label}<span style={{ fontSize: "0.85rem", color: "var(--accent)" }}>↗</span>
-            </a>
-          ))}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.6rem" }}>
+          {socials.map((s) => <SocialLink key={s.label} s={s} />)}
         </div>
       </section>
     </div>
@@ -382,7 +386,6 @@ function Nav({ page, go, theme, toggleTheme }: { page: Page; go: (p: Page) => vo
   ];
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [toggleHov, setToggleHov] = useState(false);
-
   return (
     <>
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", padding: "1.7rem 0 0.4rem", flexWrap: "wrap" }}>
@@ -418,17 +421,11 @@ export default function App() {
   const [page, setPage] = useState<Page>("home");
   const [theme, setTheme] = useState<Theme>("dark");
 
-  const go = (p: Page) => {
-    setPage(p);
-    window.scrollTo(0, 0);
-  };
+  const go = (p: Page) => { setPage(p); window.scrollTo(0, 0); };
 
   const t = themes[theme];
   const rootStyle = {
-    ...t,
-    minHeight: "100vh",
-    background: "var(--bg)",
-    color: "var(--fg)",
+    ...t, minHeight: "100vh", background: "var(--bg)", color: "var(--fg)",
     fontFamily: "'Satoshi', system-ui, sans-serif",
     transition: "background-color 250ms ease, color 250ms ease",
   } as React.CSSProperties;
@@ -437,15 +434,13 @@ export default function App() {
     <div style={rootStyle}>
       <div style={{ width: "min(100%, 960px)", margin: "0 auto", padding: "0 28px 96px" }}>
         <Nav page={page} go={go} theme={theme} toggleTheme={() => setTheme(t => t === "light" ? "dark" : "light")} />
-
         {page === "home" && <HomePage go={go} />}
         {page === "projects" && <ProjectsPage />}
         {page === "skills" && <SkillsPage />}
         {page === "about" && <AboutPage />}
-
         <footer style={{ marginTop: "5rem", paddingTop: "1.6rem", borderTop: "1px solid var(--border-soft)", display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
           <span style={{ fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", color: "var(--muted)" }}>Srivani Konda · Dublin, Ireland</span>
-          <span style={{ fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", color: "var(--muted)" }}>© 2026 · Designed with care</span>
+          <span style={{ fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", color: "var(--muted)" }}>© 2026</span>
         </footer>
       </div>
     </div>
