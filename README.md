@@ -2,37 +2,66 @@
 
 A personal portfolio built with React, TypeScript, Vite and Tailwind CSS v4.
 
+**Live site:** [srivanik8.github.io/portfolio-](https://srivanik8.github.io/portfolio-/)
+
 ## Design
 
-Dark "signal/noise" theme — a scatter of data points with an animated line that
-sweeps in to fit them, echoing the throughline of the work itself: extracting
-signal from noisy, unstructured data (RL trading agents, RAG pipelines,
-multimodal GenAI apps).
+A warm, editorial look — cream/paper background, a serif display face for
+headlines, and a rust/terracotta accent color, with a full light and dark
+mode toggle. Sections: Hero, About, Work, Projects, Skills, and Contact,
+each linking out through real GitHub, LinkedIn, and email icons.
 
-- **Type**: Fraunces (display) + Inter (body) + JetBrains Mono (labels/data)
-- **Palette**: ink background, paper text, signal-green accent, amber for secondary emphasis
+- **Type**: Fraunces (display) + Inter (body)
+- **Palette**: warm paper/ink neutrals with a rust accent (light), inverted to a deep warm charcoal (dark)
+
+## Tech stack
+
+- [React 19](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vite.dev/)
+- [Tailwind CSS v4](https://tailwindcss.com/)
 
 ## Development
 
-```bash
+\`\`\`bash
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # production build → dist/
 npm run preview  # preview the production build
-```
+npm run lint      # oxlint
+\`\`\`
 
 ## Editing content
 
-All resume content lives in `src/data.ts` — update your profile, experience,
-projects, skills, accomplishments and certifications there. No need to touch
-the components for content changes.
+All resume content lives in `src/data.ts` — profile, education, experience,
+projects, skills, accomplishments and certifications. Update your details
+there; no need to touch the components for content-only changes.
 
-## Deploying to GitHub Pages
+## Deployment
 
-1. Set `base` in `vite.config.ts` to `/your-repo-name/` if deploying to
-   `username.github.io/repo-name` (skip this if your repo is
-   `username.github.io`).
-2. `npm run build`
-3. Push the `dist/` folder to a `gh-pages` branch, or use a GitHub Action
-   (e.g. `actions/deploy-pages`).
+Deployed automatically to **GitHub Pages** via GitHub Actions
+(`.github/workflows/deploy.yml`). Every push to `main` triggers a fresh
+build and deploy — no manual steps required.
 
+- `vite.config.ts` sets `base: '/portfolio-/'` to match the GitHub Pages
+  project-site path (`username.github.io/repo-name/`). Update this if the
+  repo is ever renamed.
+- Pages source is set to **GitHub Actions** under
+  `Settings → Pages → Build and deployment`.
+
+## Project structure
+
+\`\`\`
+src/
+  App.tsx                    # page layout and sections
+  data.ts                    # all resume/profile content
+  index.css                  # theme tokens (light/dark CSS variables)
+  components/
+    SectionLabel.tsx         # small uppercase section headers
+\`\`\`
+
+## Contact
+
+- GitHub: [github.com/srivanik8](https://github.com/srivanik8)
+- LinkedIn: [linkedin.com/in/srivani-konda](https://linkedin.com/in/srivani-konda)
+- Email: imkondasrivani@gmail.com
