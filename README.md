@@ -35,3 +35,4 @@ the components for content changes.
 2. `npm run build`
 3. Push the `dist/` folder to a `gh-pages` branch, or use a GitHub Action
    (e.g. `actions/deploy-pages`).
+
