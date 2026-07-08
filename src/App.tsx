@@ -18,6 +18,26 @@ const themes = {
   },
 } as const;
 
+// Responsive rules inline styles can't express (media queries).
+// Grids collapse to 1 column on mobile, 2 on tablet, 3 on desktop.
+// Project description hides below 640px so cards stay compact on mobile.
+const RESPONSIVE_CSS = `
+.pf-grid-2, .pf-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .pf-grid-2, .pf-grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .pf-grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+.pf-desc { display: none; }
+@media (min-width: 640px) {
+  .pf-desc { display: block; }
+}
+`;
+
 // ── SVG Icons ──────────────────────────────────────────────────────────────────
 function GitHubIcon({ size = 18 }: { size?: number }) {
   return (
@@ -193,7 +213,7 @@ function ProjectCard({ p }: { p: typeof projects[0] }) {
         transition: "transform 240ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 240ms ease, border-color 200ms ease",
       }}>
       <h3 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.45rem", fontWeight: 700, lineHeight: 1.2, color: "var(--ink)" }}>{p.name}</h3>
-      <p style={{ margin: 0, fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.92rem", lineHeight: 1.6, color: "var(--fg)" }}>{p.desc}</p>
+      <p className="pf-desc" style={{ margin: 0, fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.92rem", lineHeight: 1.6, color: "var(--fg)" }}>{p.desc}</p>
       <p style={{ margin: "0.5rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.85rem", fontWeight: 600, color: "var(--accent)" }}>{p.linkLabel} →</p>
       <p style={{ margin: "0.3rem 0 0", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.76rem", letterSpacing: "0.02em", color: "var(--muted)" }}>{p.stack.join("  ·  ")}</p>
     </a>
@@ -246,8 +266,8 @@ function HomePage({ go }: { go: (p: Page) => void }) {
             All projects ↗
           </button>
         </div>
-        {/* 3 featured cards in a fixed 3-col grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
+        {/* 3 featured cards — responsive via .pf-grid-3 (1 col mobile, 2 tablet, 3 desktop) */}
+        <div className="pf-grid-3" style={{ gap: "1rem" }}>
           {projects.slice(0, 3).map((p) => <ProjectCard key={p.name} p={p} />)}
         </div>
       </section>
@@ -255,7 +275,7 @@ function HomePage({ go }: { go: (p: Page) => void }) {
   );
 }
 
-// ── Projects page — 2-col then 3-col rows ──────────────────────────────────────
+// ── Projects page — responsive rows ─────────────────────────────────────────────
 function ProjectsPage() {
   return (
     <div>
@@ -264,12 +284,12 @@ function ProjectsPage() {
         <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.4rem, 5vw, 3.2rem)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.015em", color: "var(--ink)" }}>Research that ships</h1>
       </header>
 
-      {/* Row 1: 2 cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1rem", marginBottom: "1rem" }}>
+      {/* Row 1: 2 cards — responsive via .pf-grid-2 (1 col mobile, 2 tablet+) */}
+      <div className="pf-grid-2" style={{ gap: "1rem", marginBottom: "1rem" }}>
         {projects.slice(0, 2).map((p) => <ProjectCard key={p.name} p={p} />)}
       </div>
-      {/* Row 2: 3 cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
+      {/* Row 2: 3 cards — responsive via .pf-grid-3 (1 col mobile, 2 tablet, 3 desktop) */}
+      <div className="pf-grid-3" style={{ gap: "1rem" }}>
         {projects.slice(2, 5).map((p) => <ProjectCard key={p.name} p={p} />)}
       </div>
     </div>
@@ -436,6 +456,7 @@ export default function App() {
 
   return (
     <div style={rootStyle}>
+      <style>{RESPONSIVE_CSS}</style>
       <div style={{ width: "min(100%, 960px)", margin: "0 auto", padding: "0 28px 96px" }}>
         <Nav page={page} go={go} theme={theme} toggleTheme={() => setTheme(t => t === "light" ? "dark" : "light")} />
         {page === "home" && <HomePage go={go} />}
