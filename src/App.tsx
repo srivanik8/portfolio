@@ -291,13 +291,13 @@ function ProjectsPage() {
         <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(2.4rem, 5vw, 3.2rem)", fontWeight: 600, lineHeight: 1.04, letterSpacing: "-0.015em", color: "var(--ink)" }}>Research that ships</h1>
       </header>
 
-      {/* Row 1: 2 cards — responsive via .pf-grid-2 (1 col mobile, 2 tablet+) */}
-      <div className="pf-grid-2" style={{ gap: "1rem", marginBottom: "1rem" }}>
-        {projects.slice(0, 2).map((p) => <ProjectCard key={p.name} p={p} />)}
+      {/* Row 1: first 3 — responsive via .pf-grid-3 (1 col mobile, 2 tablet, 3 desktop) */}
+      <div className="pf-grid-3" style={{ gap: "1rem", marginBottom: "1rem" }}>
+        {projects.slice(0, 3).map((p) => <ProjectCard key={p.name} p={p} />)}
       </div>
-      {/* Row 2: 3 cards — responsive via .pf-grid-3 (1 col mobile, 2 tablet, 3 desktop) */}
+      {/* Row 2: the rest, same grid so the rows line up */}
       <div className="pf-grid-3" style={{ gap: "1rem" }}>
-        {projects.slice(2, 5).map((p) => <ProjectCard key={p.name} p={p} />)}
+        {projects.slice(3).map((p) => <ProjectCard key={p.name} p={p} />)}
       </div>
     </div>
   );
