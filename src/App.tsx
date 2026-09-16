@@ -116,6 +116,13 @@ const projects = [
     linkLabel: "View on GitHub",
     url: "https://github.com/srivanik8/vishayamitra",
   },
+  {
+    name: "Night-Vision Wildlife Recognition",
+    stack: ["PyTorch", "ResNet-18", "MegaDetector", "YOLOv8", "OpenCV"],
+    desc: "Six species picked out of night-time infrared camera-trap photos. A detector crops the animal first, then a fine-tuned ResNet calls it — 68.7% accuracy on camera sites it had never seen.",
+    linkLabel: "View on GitHub",
+    url: "https://github.com/ACM40960/wildlife-species-recognition",
+  },
 ];
 
 const skills = [
