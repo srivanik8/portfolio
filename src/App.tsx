@@ -129,6 +129,7 @@ const skills = [
   { label: "ML / AI", items: ["Python", "PyTorch", "TensorFlow", "Keras", "Scikit-learn", "RL (PPO, DQN, A2C)", "Gymnasium"] },
   { label: "LLMs & GenAI", items: ["Gemini API", "Claude API", "GPT", "Prompt Engineering", "RAG Pipeline Design", "LangChain"] },
   { label: "NLP", items: ["Hugging Face (BERT, RoBERTa)", "NLTK", "Sentiment Analysis", "Document Classification"] },
+  { label: "Computer Vision", items: ["CNNs (ResNet)", "Transfer Learning", "Image Classification", "Object Detection (YOLOv8)", "MegaDetector", "OpenCV", "Image Augmentation"] },
   { label: "Data", items: ["Pandas", "NumPy", "SQL", "MongoDB", "DuckDB", "EDA"] },
   { label: "Deployment", items: ["Streamlit", "FastAPI", "Docker", "Git", "Vercel", "Azure"] },
   { label: "Visualisation", items: ["Matplotlib", "Seaborn", "Plotly", "Tableau", "Power BI"] },
