@@ -129,13 +129,14 @@ export const projects = [
 ];
 
 export const skills = {
-  "ML / AI": ["Python", "PyTorch", "TensorFlow", "Keras", "Scikit-learn", "RL (PPO, DQN, A2C)", "Gymnasium"],
+  "ML / AI": ["Python", "PyTorch", "TensorFlow", "Keras", "Scikit-learn", "RL (PPO, DQN, A2C)", "Gymnasium", "Model Evaluation (ROC / AUC)", "Experiment Tracking"],
   "LLMs & GenAI": ["Gemini API", "Claude API", "GPT", "Prompt Engineering", "RAG Pipeline Design", "LangChain"],
   NLP: ["Hugging Face (BERT, RoBERTa)", "NLTK", "Sentiment Analysis", "Document Classification"],
+  "Computer Vision": ["CNNs (ResNet)", "Transfer Learning", "Image Classification", "Object Detection (YOLOv8)", "MegaDetector", "OpenCV", "Image Augmentation"],
   Data: ["Pandas", "NumPy", "SQL", "MongoDB", "DuckDB", "EDA"],
-  Deployment: ["Streamlit", "FastAPI", "Docker", "Git", "Vercel", "Azure"],
+  Deployment: ["Streamlit", "FastAPI", "Docker", "Conda", "Git", "Vercel", "Azure"],
   Visualisation: ["Matplotlib", "Seaborn", "Plotly", "Tableau", "Power BI"],
-  Other: ["React.js", "JavaScript", "OpenCV", "C/C++"],
+  Other: ["React.js", "JavaScript", "pytest", "C/C++"],
 };
 
 export const accomplishments = [
