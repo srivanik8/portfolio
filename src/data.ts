@@ -11,7 +11,7 @@ export const profile = {
   linkedin: "https://linkedin.com/in/srivani-konda",
   github: "https://github.com/srivanik8",
   summary:
-    "I'm Srivani — a CS grad specialising in AI & ML, currently doing my MSc at UCD. I got into machine learning because I liked the idea of writing code that figures things out on its own, and that's still what drives most of what I build. Over the past couple of years I've shipped a reinforcement learning trading system that got published, built a Gemini-powered diagnostic tool that's live on Streamlit, and put together a multimodal learning app from scratch. I'm most at home at the intersection of research and deployment — reading papers on a Monday, pushing something to production by Friday.",
+    "I'm Srivani — a CS grad specialising in AI & ML, currently doing my MSc at UCD. I got into machine learning because I liked the idea of writing code that figures things out on its own, and that's still what drives most of what I build. Over the past couple of years I've shipped a reinforcement learning trading system that got published, built a Gemini-powered diagnostic tool that's live on Streamlit, and trained a vision model to pick out wildlife species in night-time camera-trap photos. I'm most at home at the intersection of research and deployment — reading papers on a Monday, pushing something to production by Friday.",
 };
 
 export const education = [

@@ -256,7 +256,7 @@ function HomePage({ go }: { go: (p: Page) => void }) {
       <section style={{ paddingTop: "4rem" }}>
         <p style={{ margin: "0 0 0.5rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>About</p>
         <p style={{ margin: 0, maxWidth: "46rem", fontFamily: "'Satoshi', system-ui, sans-serif", fontSize: "1.12rem", lineHeight: 1.72, color: "var(--fg)" }}>
-          I'm Srivani — a CS grad specialising in AI & ML, currently doing my MSc at UCD. I got into machine learning because I liked the idea of writing code that figures things out on its own, and that's still what drives most of what I build. Over the past couple of years I've shipped a reinforcement-learning trading system that got published, built a Gemini-powered diagnostic tool that's live on Streamlit, and put together a multimodal learning app from scratch. Reading papers on a Monday, and pushing something to production by Friday is what my week usually looks.
+          I'm Srivani — a CS grad specialising in AI & ML, currently doing my MSc at UCD. I got into machine learning because I liked the idea of writing code that figures things out on its own, and that's still what drives most of what I build. Over the past couple of years I've shipped a reinforcement-learning trading system that got published, built a Gemini-powered diagnostic tool that's live on Streamlit, and trained a vision model to pick out wildlife species in night-time camera-trap photos. Reading papers on a Monday, and pushing something to production by Friday is what my week usually looks.
         </p>
       </section>
 
