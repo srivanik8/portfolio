@@ -132,7 +132,7 @@ export const skills = {
   "ML / AI": ["Python", "PyTorch", "TensorFlow", "Keras", "Scikit-learn", "RL (PPO, DQN, A2C)", "Gymnasium", "Model Evaluation (ROC / AUC)", "Experiment Tracking", "Model Calibration", "Class Imbalance Handling", "Bootstrap Confidence Intervals", "Group-Aware Data Splitting"],
   "LLMs & GenAI": ["Gemini API", "Claude API", "GPT", "Prompt Engineering", "RAG Pipeline Design", "LangChain"],
   NLP: ["Hugging Face (BERT, RoBERTa)", "NLTK", "Sentiment Analysis", "Document Classification"],
-  "Computer Vision": ["CNNs (ResNet)", "Transfer Learning", "Image Classification", "Object Detection (YOLOv8)", "MegaDetector", "OpenCV", "Image Augmentation"],
+  "Computer Vision": ["CNNs (ResNet)", "Transfer Learning", "Image Classification", "Object Detection (YOLOv8)", "MegaDetector", "OpenCV", "Image Augmentation", "Fine-Tuning (Layer Freezing)", "Bounding-Box Cropping", "Infrared Imagery"],
   Data: ["Pandas", "NumPy", "SQL", "MongoDB", "DuckDB", "EDA"],
   Deployment: ["Streamlit", "FastAPI", "Docker", "Conda", "Git", "Vercel", "Azure"],
   Visualisation: ["Matplotlib", "Seaborn", "Plotly", "Tableau", "Power BI"],
