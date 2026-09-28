@@ -186,7 +186,7 @@ const socials = [
   { label: "GitHub", url: "https://github.com/srivanik8" },
   { label: "LinkedIn", url: "https://linkedin.com/in/srivani-konda" },
   { label: "Email", url: "mailto:imkondasrivani@gmail.com" },
-  { label: "Resume", url: "https://drive.google.com/file/d/18c9uv-t6_AcKsGsi8WhD5kC_0EeyoI2G/view?usp=sharing"},
+  { label: "Resume", url: `${import.meta.env.BASE_URL}Srivani_Konda_Data_Analyst.pdf` },
 ];
 
 // ── SocialLink ─────────────────────────────────────────────────────────────────
