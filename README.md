@@ -37,6 +37,10 @@ The rendered content — projects, skills, experience, education, awards and
 certifications — lives in `src/App.tsx`, in the plain arrays just above the
 components. **Edit those to change what the site shows.**
 
+Order matters: the Home page features the first three entries of `projects`,
+and the Projects page renders the whole array in order — so moving a project
+to the top of that array is what gives it top billing in both places.
+
 `src/data.ts` holds the same content in a longer-form shape (and is the one
 place the full project write-ups live), but nothing imports it yet, so editing
 it alone will not change the site. Keep the two in step until they are merged.
