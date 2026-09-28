@@ -8,8 +8,8 @@
   --color-hairline: #e4ddd0;
   --color-paper-dim: #6b6459;
 
-  --font-display: "Fraunces", serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Satoshi", system-ui, sans-serif;
 }
 
 /* Default to light so there's zero flash before React mounts */
