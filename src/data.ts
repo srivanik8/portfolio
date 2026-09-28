@@ -67,6 +67,16 @@ export const experience = [
 
 export const projects = [
   {
+    name: "Night-Vision Wildlife Recognition",
+    stack: ["PyTorch", "ResNet-18", "MegaDetector", "YOLOv8", "OpenCV"],
+    description:
+      "Six-species classifier for night-time infrared camera-trap frames. MegaDetector and YOLOv8 crop the animal, a fine-tuned ResNet-18 classifies the crop, and the data is split by camera location so the model learns the animal rather than the background. 68.7% accuracy and 0.891 macro AUC on unseen camera sites. ACM 40960 group project at UCD.",
+    link: {
+      label: "View on GitHub",
+      url: "https://github.com/ACM40960/wildlife-species-recognition",
+    },
+  },
+  {
     name: "Algorithmic Trading using RL",
     stack: ["PyTorch", "Gymnasium", "Transformers", "NLTK", "Pandas"],
     description:
@@ -114,16 +124,6 @@ export const projects = [
     link: {
       label: "View on GitHub",
       url: "https://github.com/srivanik8/vishayamitra",
-    },
-  },
-  {
-    name: "Night-Vision Wildlife Recognition",
-    stack: ["PyTorch", "ResNet-18", "MegaDetector", "YOLOv8", "OpenCV"],
-    description:
-      "Six-species classifier for night-time infrared camera-trap frames. MegaDetector and YOLOv8 crop the animal, a fine-tuned ResNet-18 classifies the crop, and the data is split by camera location so the model learns the animal rather than the background. 68.7% accuracy and 0.891 macro AUC on unseen camera sites. ACM 40960 group project at UCD.",
-    link: {
-      label: "View on GitHub",
-      url: "https://github.com/ACM40960/wildlife-species-recognition",
     },
   },
 ];
