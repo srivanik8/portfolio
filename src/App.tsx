@@ -126,7 +126,7 @@ const projects = [
 ];
 
 const skills = [
-  { label: "ML / AI", items: ["Python", "PyTorch", "TensorFlow", "Keras", "Scikit-learn", "RL (PPO, DQN, A2C)", "Gymnasium", "Model Evaluation (ROC / AUC)", "Experiment Tracking"] },
+  { label: "ML / AI", items: ["Python", "PyTorch", "TensorFlow", "Keras", "Scikit-learn", "RL (PPO, DQN, A2C)", "Gymnasium", "Model Evaluation (ROC / AUC)", "Experiment Tracking", "Model Calibration", "Class Imbalance Handling", "Bootstrap Confidence Intervals", "Group-Aware Data Splitting"] },
   { label: "LLMs & GenAI", items: ["Gemini API", "Claude API", "GPT", "Prompt Engineering", "RAG Pipeline Design", "LangChain"] },
   { label: "NLP", items: ["Hugging Face (BERT, RoBERTa)", "NLTK", "Sentiment Analysis", "Document Classification"] },
   { label: "Computer Vision", items: ["CNNs (ResNet)", "Transfer Learning", "Image Classification", "Object Detection (YOLOv8)", "MegaDetector", "OpenCV", "Image Augmentation"] },
