@@ -82,6 +82,13 @@ function SocialIcon({ label, size }: { label: string; size?: number }) {
 // ── Data ───────────────────────────────────────────────────────────────────────
 const projects = [
   {
+    name: "Night-Vision Wildlife Recognition",
+    stack: ["PyTorch", "ResNet-18", "MegaDetector", "YOLOv8", "OpenCV"],
+    desc: "Six species picked out of night-time infrared camera-trap photos. A detector crops the animal first, then a fine-tuned ResNet calls it — 68.7% accuracy on camera sites it had never seen.",
+    linkLabel: "View on GitHub",
+    url: "https://github.com/ACM40960/wildlife-species-recognition",
+  },
+  {
     name: "Algorithmic Trading using RL",
     stack: ["PyTorch", "Gymnasium", "Transformers", "NLTK", "Pandas"],
     desc: "Trained RL agents to trade in simulated markets and fed them live news sentiment — hit 92% strategy accuracy. Published in a peer-reviewed journal.",
@@ -115,13 +122,6 @@ const projects = [
     desc: "A chat interface for querying tabular data in plain language using PandasAI. Built as part of a team.",
     linkLabel: "View on GitHub",
     url: "https://github.com/srivanik8/vishayamitra",
-  },
-  {
-    name: "Night-Vision Wildlife Recognition",
-    stack: ["PyTorch", "ResNet-18", "MegaDetector", "YOLOv8", "OpenCV"],
-    desc: "Six species picked out of night-time infrared camera-trap photos. A detector crops the animal first, then a fine-tuned ResNet calls it — 68.7% accuracy on camera sites it had never seen.",
-    linkLabel: "View on GitHub",
-    url: "https://github.com/ACM40960/wildlife-species-recognition",
   },
 ];
 
